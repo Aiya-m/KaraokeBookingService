@@ -35,6 +35,7 @@ class Booking(models.Model):
     booking_date = models.DateField(null=False)
     start_time = models.TimeField(null=False)
     end_time = models.TimeField(null=False)
+    phone = models.CharField(max_length=20, null=False)
     booking_status = models.CharField(max_length=20, choices=Booking_status.choices)
     notes = models.CharField(max_length=200, null=True)
 
