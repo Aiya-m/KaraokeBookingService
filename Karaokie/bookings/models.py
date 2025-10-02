@@ -1,21 +1,5 @@
 from django.db import models
 
-class User(models.Model):
-    class Role(models.TextChoices):
-        Manager = "manager"
-        Customer = "customer"
-
-    username = models.CharField(max_length=100, unique=True, null=False)
-    password = models.CharField(max_length=100, null=False)
-    email = models.EmailField(max_length=100, unique=True, null=False)
-    role = models.CharField(max_length=20, choices=Role.choices)
-
-class Customer_profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100, null=False)
-    last_name = models.CharField(max_length=100, null=False)
-    phone = models.CharField(max_length=20, null=False)
-
 class Room_type(models.Model):
     name = models.CharField(max_length=50, unique=True, null=False)
     capacity = models.IntegerField(null=False)
@@ -41,7 +25,11 @@ class Booking(models.Model):
         Check_In = "เช็กอิน"
         Check_Out = "เช็กเอาท์"
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        'auth.User', 
+        on_delete=models.CASCADE,
+        related_name='booking'
+    )
     room = models.ForeignKey(Room_type, on_delete=models.CASCADE)
     number_of_customer = models.IntegerField(null=False)
     booking_date = models.DateField(null=False)
