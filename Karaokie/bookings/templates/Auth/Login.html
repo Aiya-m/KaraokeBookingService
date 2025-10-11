@@ -5,6 +5,11 @@
     <div class="card shadow-lg" style="max-width: 500px; width: 100%;">
         <div class="card-body m-5 mt-1 mb-0">
             <h2 class="text-center mt-5 mb-5">เข้าสู่ระบบ</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <form method="post"">
                 {% csrf_token %}
                 <div class=" mb-2">
