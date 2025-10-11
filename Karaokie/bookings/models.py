@@ -38,6 +38,7 @@ class Booking(models.Model):
     phone = models.CharField(max_length=20, null=False, default="")
     booking_status = models.CharField(max_length=20, choices=Booking_status.choices)
     notes = models.CharField(max_length=200, null=True)
+    create_date = models.DateTimeField(auto_now_add=True)
 
 class Services(models.Model):
     name = models.CharField(max_length=50, unique=True, null=False)
@@ -57,4 +58,3 @@ class Payments(models.Model):
     payment_slip = models.BinaryField(null=False)
     payment_status = models.CharField(max_length=20, choices=Pay_status.choices)
     pay_date = models.DateTimeField(null=False)
-    pay_create_date = models.DateTimeField(auto_now_add=True)
