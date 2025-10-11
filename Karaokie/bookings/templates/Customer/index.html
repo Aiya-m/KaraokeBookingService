@@ -25,11 +25,14 @@
                             <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
                         </p>
                         <div class="text-end">
-                            <button type="button" class="btn btn-success">จองห้อง</button>
+                            <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
+            {% if not bigRooms %}
+                <p class="text-danger">ไม่มีห้องให้บริการขณะนี้</p>
+            {% endif %}
         </div>
     </div>
     <div class="container py-3 m-5">
@@ -53,11 +56,14 @@
                             <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
                         </p>
                         <div class="text-end">
-                            <button type="button" class="btn btn-success">จองห้อง</button>
+                            <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
+            {% if not bigRooms %}
+                <p class="text-danger">ไม่มีห้องให้บริการขณะนี้</p>
+            {% endif %}
         </div>
     </div>
     <div class="container py-3 m-5">
@@ -81,11 +87,14 @@
                             <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
                         </p>
                         <div class="text-end">
-                            <button type="button" class="btn btn-success">จองห้อง</button>
+                            <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
+            {% if not bigRooms %}
+                <p class="text-danger">ไม่มีห้องให้บริการขณะนี้</p>
+            {% endif %}
         </div>
     </div>
 </div>
