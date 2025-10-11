@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %} KaraOkkie {% endblock %}
+{% block content %}
+<div class="container py-3 m-5">
+    <h2 class="fw-bold pb-3">ประเภทห้องขนาดใหญ่</h2>
+
+    <div class="d-flex overflow-auto">
+        <div class="card me-3 p-5" style="min-width: 500px; max-width: 500px;">
+            <div class="card-title">
+                <h4 class="fw-bold">ห้องใหญ่ (Large Room)</h4>
+            </div>
+            <div class="card-body p-0">
+                <p>
+                    <span class="fw-bold">คำอธิบาย : </span><br>
+                    เหมาะสำหรับกลุ่มใหญ่ เช่น งานเลี้ยงบริษัท หรือปาร์ตี้เพื่อนฝูง รองรับระบบเสียงรอบทิศทาง จอโปรเจกเตอร์ขนาดใหญ่ พร้อมโซฟานุ่มเต็มพื้นที่
+                </p>
+                <p>
+                    <span class="fw-bold">ขนาดห้อง: </span> ประมาณ 40–50 ตร.ม.
+                </p>
+                <p>
+                    <span class="fw-bold">ความจุ: </span> 10–15 คน
+                </p>
+                <p>
+                    <span class="fw-bold">ราคาต่อชั่วโมง: </span> 600 บาท
+                </p>
+                <div class="text-end">
+                    <button type="button" class="btn btn-success">จองห้อง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
