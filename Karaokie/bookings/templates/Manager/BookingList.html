@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_filter %}
 {% block title %} Booking List {% endblock %}
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center pt-4">
@@ -61,7 +62,8 @@
                                         <p>เวลาที่เข้ารับบริการ : {{ book.get_book_time }}</p>
                                         <p>หมายเหตุ : {{ book.notes }}</p>
                                         <p>สถานะ : {{ book.booking_status }}</p>
-                                        <p>ห้อง : {{ book.room.name }}</p>
+                                        <p>ห้อง : {{ book.room.name }} ({{ book.room.room_type.name }})</p>
+                                        <p>ราคารวม : {{ book|get_total_price }}</p>
                                         <div class="card shadow-lg w-full">
                                             <div class="overflow-x-auto bg-white rounded-lg shadow border border-orange-100">
                                                 <table>

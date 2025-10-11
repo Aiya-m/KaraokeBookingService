@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime, timedelta
 
 class Room_type(models.Model):
     name = models.CharField(max_length=50, unique=True, null=False)
@@ -45,6 +46,16 @@ class Booking(models.Model):
         start = self.start_time.strftime("%H:%M")
         end = self.end_time.strftime("%H:%M")
         return f"{start} - {end}"
+    
+    def get_price(self, room):
+        start_datetime = datetime.combine(datetime.today(), self.start_time)
+        end_datetime = datetime.combine(datetime.today(), self.end_time)
+
+        duration = (end_datetime - start_datetime)/3600
+        price = duration.total_seconds() * room.room_type.price_per_hour
+        return price
+
+
 
 class BookingServices(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
