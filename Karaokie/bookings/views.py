@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from bookings.forms import RegisterModelForm, LoginForm
+from bookings.models import Rooms
+from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -17,6 +19,8 @@ class RegisterView(View):
         if form.is_valid():
             print('valid form')
             user = form.save()
+            group = Group.objects.get(name="Customer")
+            user.groups.add(group)
             messages.success(request, 'Account created successfully.')
             login(request, user)
             return redirect('customer-home')
@@ -47,4 +51,11 @@ class LogoutView(View):
 
 class CustomerHome(View):
     def get(self, request):
-        return render(request, 'Customer/index.html')
+        bigRooms = Rooms.objects.filter(room_type__name='ห้องขนาดใหญ่')
+        mediumRooms = Rooms.objects.filter(room_type__name='ห้องขนาดกลาง')
+        smallRooms = Rooms.objects.filter(room_type__name='ห้องขนาดเล็ก')
+        return render(request, 'Customer/index.html', {
+            'bigRooms': bigRooms,
+            'mediumRooms': mediumRooms,
+            'smallRooms': smallRooms
+            })
