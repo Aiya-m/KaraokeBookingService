@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from bookings.models import *
 from django.views import View
 from bookings.forms import RegisterModelForm, LoginForm
 from django.contrib.auth import login, logout, authenticate
@@ -56,4 +57,5 @@ class CustomerHome(View):
     
 class BookingList(View):
     def get(self, request):
-        return render(request, 'Manager/BookingList.html')
+        bookinglist = Booking.objects.all()
+        return render(request, 'Manager/BookingList.html', context={"booking_list": bookinglist})
