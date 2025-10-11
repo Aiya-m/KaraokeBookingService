@@ -35,16 +35,25 @@ class LoginView(View):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            return redirect(request, '')
+            if user.is_staff :
+                return redirect('bookinglist')
+            else:
+                return redirect('customer-home')
         else:
-            return render(request, 'Auth/Login.html', {"form": None})
+            messages.error(request, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+            form = LoginForm(request.POST)
+            return render(request, 'Auth/Login.html', {"loginform": form})
         
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return render(request, 'Auth/Login.html', {"form": None})
+        form = LoginForm()
+        return render(request, 'login', {"loginform": form})
 
 class CustomerHome(View):
     def get(self, request):
         return render(request, 'Customer/index.html')
+    
+class BookingList(View):
+    def get(self, request):
+        return render(request, 'Manager/BookingList.html')
