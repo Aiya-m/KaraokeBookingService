@@ -19,32 +19,33 @@
         <div class="container-fluid px-4 py-3">
             <div class="d-flex align-items-center me-auto">
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'customer-home' %}" class="navbar-brand h1 mb-0 text-black font-weight-bold fs-4 px-4 bg-white rounded-pill">KARAOKKIE ROOMS</a>
-                    <ul class="navbar-nav gap-3">
-                        {% if not request.user.is_staff %}
-                        <li class="nav-item">
-                            <a href="{% url 'customer-home' %}" class="nav-link text-white hover-link">หน้าหลัก</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">การจอง</a>
-                        </li>
-                    </ul>
-                {% else %}
-                    <a href="{% url 'bookinglist' %}" class="navbar-brand h1 mb-0 text-black font-weight-bold fs-4 px-4 bg-white rounded-pill">KARAOKKIE ROOMS</a>
-                    <ul class="navbar-nav gap-3">
-                        <li class="nav-item">
-                            <a href="{% url 'bookinglist' %}" class="nav-link text-white hover-link">หน้าหลัก</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">รายการการจอง</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">เช็คอิน-เช็คเอาท์</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">ข้อมูลห้อง-บริการ</a>
-                        </li>
-                    </ul>
+                    {% if not request.user.is_staff %}
+                        <a href="{% url 'customer-home' %}" class="navbar-brand h1 mb-0 text-black font-weight-bold fs-4 px-4 bg-white rounded-pill">KARAOKKIE ROOMS</a>
+                        <ul class="navbar-nav gap-3">
+                            <li class="nav-item">
+                                <a href="{% url 'customer-home' %}" class="nav-link text-white hover-link">หน้าหลัก</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">การจอง</a>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <a href="{% url 'bookinglist' %}" class="navbar-brand h1 mb-0 text-black font-weight-bold fs-4 px-4 bg-white rounded-pill">KARAOKKIE ROOMS</a>
+                        <ul class="navbar-nav gap-3">
+                            <li class="nav-item">
+                                <a href="{% url 'bookinglist' %}" class="nav-link text-white hover-link">หน้าหลัก</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">รายการการจอง</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">เช็คอิน-เช็คเอาท์</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'customer-booking' %}" class="nav-link text-white hover-link">ข้อมูลห้อง-บริการ</a>
+                            </li>
+                        </ul>
+                    {% endif %}
                 {% endif %}
             </div>
 
@@ -55,6 +56,9 @@
                         <!-- <div class="text-white ">
                             <i class="bi bi-person-circle"></i>
                         </div> -->
+                    </div>
+                    <div>
+                        <a href="{% url 'logout' %}">ออกจากระบบ</a>
                     </div>
                 {% else %}
                     <div>

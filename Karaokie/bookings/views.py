@@ -40,6 +40,7 @@ class LoginView(View):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            login(request, user)
             if user.is_staff :
                 return redirect('bookinglist')
             else:
@@ -52,8 +53,7 @@ class LoginView(View):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        form = LoginForm()
-        return render(request, 'login', {"loginform": form})
+        return redirect('login')
 
 class CustomerHome(View):
     def get(self, request):
