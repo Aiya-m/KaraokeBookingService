@@ -4,7 +4,7 @@ from bookings.forms import RegisterModelForm, LoginForm
 from bookings.models import Rooms
 from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 # Create your views here.
@@ -21,7 +21,7 @@ class RegisterView(View):
             user = form.save()
             group = Group.objects.get(name="Customer")
             user.groups.add(group)
-            messages.success(request, 'Account created successfully.')
+            messages.success(request, 'สร้างบัญชีสำเร็จ')
             login(request, user)
             return redirect('customer-home')
         else:
@@ -64,6 +64,14 @@ class CustomerHome(View):
             'mediumRooms': mediumRooms,
             'smallRooms': smallRooms
             })
+
+class CustomerBooking(LoginRequiredMixin, View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'Customer/bookingPage.html')
+        else:
+            return redirect('login')
+
     
 class BookingList(View):
     def get(self, request):
