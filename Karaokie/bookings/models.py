@@ -16,6 +16,10 @@ class Rooms(models.Model):
     room_type = models.ForeignKey(Room_type, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=Status.choices)
 
+class Services(models.Model):
+    name = models.CharField(max_length=50, unique=True, null=False)
+    price = models.IntegerField(null=False)
+
 class Booking(models.Model):
     class Booking_status(models.TextChoices):
         Pending = "รอดำเนินการ"
@@ -35,13 +39,12 @@ class Booking(models.Model):
     booking_status = models.CharField(max_length=20, choices=Booking_status.choices)
     notes = models.CharField(max_length=200, null=True)
     create_date = models.DateTimeField(auto_now_add=True)
+    service = models.ManyToManyField(Services)
 
     def get_book_time(self):
-        return f"{self.start_time} - {self.end_time}"
-
-class Services(models.Model):
-    name = models.CharField(max_length=50, unique=True, null=False)
-    price = models.IntegerField(null=False)
+        start = self.start_time.strftime("%H:%M")
+        end = self.end_time.strftime("%H:%M")
+        return f"{start} - {end}"
 
 class BookingServices(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)

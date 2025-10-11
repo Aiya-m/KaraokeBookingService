@@ -9,8 +9,8 @@
                     <tr>
                         <th class="p-4">วันที่จอง</th>
                         <th class="p-4">ชื่อห้อง</th>
-                        <th class="p-4">วันที่ต้องการจอง</th>
-                        <th class="p-4">เวลาที่จอง</th>
+                        <th class="p-4">วันที่เข้ารับบริการ</th>
+                        <th class="p-4">เวลาที่เข้ารับบริการ</th>
                         <th class="p-4">ชื่อลูกค้า</th>
                         <th class="p-4">จำนวนลูกค้า</th>
                         <th class="p-4">เบอร์โทรศัพท์</th>
@@ -18,6 +18,81 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for book in booking_list %}
+                        <td>
+                            {{ book.create_date }}
+                        </td>
+                        <td>
+                            {{ book.room.name }}
+                        </td>
+                        <td>
+                            {{ book.booking_date }}
+                        </td>
+                        <td>
+                            {{ book.get_book_time }}
+                        </td>
+                        <td>
+                            {{ book.User.first_name }}
+                        </td>
+                        <td>
+                            {{ book.number_of_customer }}
+                        </td>
+                        <td>
+                            {{ book.phone }}
+                        </td>
+                        <td>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#detailsModal{{ book.id }}">
+                                รายละเอียดเพิ่มเติม
+                            </a>
+                            {% for book in booking_list %}
+                                <!-- Modal -->
+                                <div class="modal fade" id="detailsModal{{ book.id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ book.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="detailsModalLabel{{ book.id }}">รายละเอียดการจอง</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>ชื่อผู้จอง : {{ book.user.first_name }} {{ book.user.last_name }}</p>
+                                        <p>เบอร์โทร : {{ book.phone }}</p>
+                                        <p>จำนวนลูกค้า : {{ book.number_of_customer }}</p>
+                                        <p>วันที่เข้ารับบริการ : {{ book.booking_date }}</p>
+                                        <p>เวลาที่เข้ารับบริการ : {{ book.get_book_time }}</p>
+                                        <p>หมายเหตุ : {{ book.notes }}</p>
+                                        <p>สถานะ : {{ book.booking_status }}</p>
+                                        <p>ห้อง : {{ book.room.name }}</p>
+                                        <div class="card shadow-lg w-full">
+                                            <div class="overflow-x-auto bg-white rounded-lg shadow border border-orange-100">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="p-4">บริการเสริม</th>
+                                                            <th class="p-4">จำนวน</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for bs in book.bookingservices_set.all %}
+                                                            <tr>
+                                                                <td>{{ bs.service.name }}</td>
+                                                                <td>{{ bs.quantity }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปฏิเสธ</button>
+                                        <button type="button" class="btn btn-primary">ยืนยัน</button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                                {% endfor %}
+                        </td>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
