@@ -25,12 +25,8 @@ class Booking(models.Model):
         Check_In = "เช็กอิน"
         Check_Out = "เช็กเอาท์"
 
-    user = models.ForeignKey(
-        'auth.User', 
-        on_delete=models.CASCADE,
-        related_name='booking'
-    )
-    room = models.ForeignKey(Room_type, on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE,related_name='booking')
+    room = models.ForeignKey(Rooms, on_delete=models.CASCADE)
     number_of_customer = models.IntegerField(null=False)
     booking_date = models.DateField(null=False)
     start_time = models.TimeField(null=False)
@@ -39,6 +35,9 @@ class Booking(models.Model):
     booking_status = models.CharField(max_length=20, choices=Booking_status.choices)
     notes = models.CharField(max_length=200, null=True)
     create_date = models.DateTimeField(auto_now_add=True)
+
+    def get_book_time(self):
+        return f"{self.start_time} - {self.end_time}"
 
 class Services(models.Model):
     name = models.CharField(max_length=50, unique=True, null=False)
