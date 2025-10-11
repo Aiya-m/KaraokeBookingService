@@ -1,9 +1,35 @@
 {% extends 'base.html' %}
-
+{% block title %} Login {% endblock %}
 {% block content %}
-<div class="row justify-content-center pt-4">
-    <div class="col-md-6 mt-3 border">
-        <h2 class="text-center mt-5 mb-5">Login</h2>
+<div class="container d-flex justify-content-center align-items-center pt-4">
+    <div class="card shadow-lg" style="max-width: 500px; width: 100%;">
+        <div class="card-body m-5 mt-1 mb-0">
+            <h2 class="text-center mt-5 mb-5">เข้าสู่ระบบ</h2>
+            <form method="post"">
+                {% csrf_token %}
+                <div class=" mb-2">
+                <label for="{{ loginform.username.id_for_label }}" class="form-label">ชื่อผู้ใช้ : </label>
+                {{ loginform.username }}
+                <div class="text-danger small">
+                    {{ loginform.username.errors }}
+                </div>
+        </div>
+        <div class="mb-2">
+            <label for="{{ loginform.password.id_for_label }}" class="form-label">รหัสผ่าน : </label>
+            {{ loginform.password }}
+            <div class="text-danger small">
+                {{ loginform.password.errors }}
+            </div>
+        </div>
+        <div class="text-center m-5 mt-4 mb-0 pb-4">
+            <button type="submit" class="btn btn-success w-100 mb-3">เข้าสู่ระบบ</button>
+            <p>ยังไม่ได้เป็นสมาชิก?
+                <a href="{% url 'register' %}">สมัครสมาชิก</a>
+            </p>
+        </div>
+        </form>
     </div>
+
+</div>
 </div>
 {% endblock %}

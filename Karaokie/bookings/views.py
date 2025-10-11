@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from django import views
-from bookings.forms import RegisterModelForm
+from django.views import View
+from bookings.forms import RegisterModelForm, LoginForm
+from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
-class RegisterView(views.View):
+class RegisterView(View):
     def get(self, request):
         form = RegisterModelForm()
         return render(request, 'Auth/RegisterPage.html', {'registerform': form})
@@ -16,6 +17,23 @@ class RegisterView(views.View):
             return redirect("login")
         return render(request, 'Auth/RegisterPage.html', {'registerform': form})
     
-def Login(request):
-    if request.method == "GET":
-        return render(request, 'Auth/Login.html')
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'Auth/Login.html', {'loginform': form})
+    
+    def post(self, request):
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect(request, '')
+        else:
+            return render(request, 'Auth/Login.html', {"form": None})
+        
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return render(request, 'Auth/Login.html', {"form": None})

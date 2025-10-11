@@ -22,3 +22,11 @@ class RegisterModelForm(UserCreationForm):
             "password2"
         ]
     
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model =  User
+        fields = ["username","password"]
+        widgets = {
+            "username" : forms.TextInput(attrs={"placeholder": "ชื่อผู้ใช้", "class": "form-control"}),
+            "password" : forms.PasswordInput(attrs={"placeholder": "รหัสผ่าน", "class": "form-control"})
+        }
