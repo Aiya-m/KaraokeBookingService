@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from bookings.models import *
 from django.views import View
 from bookings.forms import RegisterModelForm, LoginForm
+from bookings.models import Rooms
+from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 # Create your views here.
@@ -18,7 +20,9 @@ class RegisterView(View):
         if form.is_valid():
             print('valid form')
             user = form.save()
-            messages.success(request, 'Account created successfully.')
+            group = Group.objects.get(name="Customer")
+            user.groups.add(group)
+            messages.success(request, 'สร้างบัญชีสำเร็จ')
             login(request, user)
             return redirect('customer-home')
         else:
@@ -53,7 +57,22 @@ class LogoutView(View):
 
 class CustomerHome(View):
     def get(self, request):
-        return render(request, 'Customer/index.html')
+        bigRooms = Rooms.objects.filter(room_type__name='ห้องขนาดใหญ่')
+        mediumRooms = Rooms.objects.filter(room_type__name='ห้องขนาดกลาง')
+        smallRooms = Rooms.objects.filter(room_type__name='ห้องขนาดเล็ก')
+        return render(request, 'Customer/index.html', {
+            'bigRooms': bigRooms,
+            'mediumRooms': mediumRooms,
+            'smallRooms': smallRooms
+            })
+
+class CustomerBooking(LoginRequiredMixin, View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'Customer/bookingPage.html')
+        else:
+            return redirect('login')
+
     
 class BookingList(View):
     def get(self, request):

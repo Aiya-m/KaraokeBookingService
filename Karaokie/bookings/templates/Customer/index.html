@@ -1,32 +1,100 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} KaraOkkie {% endblock %}
 {% block content %}
-<div class="container py-3 m-5">
-    <h2 class="fw-bold pb-3">ประเภทห้องขนาดใหญ่</h2>
+<div class="m-5">
+    <h1 class="text-center fw-bold">ยินดีต้อนรับสู่ KARAOKKIE</h1>
+    <div class="container py-3 m-5">
+        <h2 class="fw-bold pb-3">ประเภทห้องขนาดใหญ่</h2>
+        <p>
+            {{ bigRooms.0.room_type.description }}
+        </p>
 
-    <div class="d-flex overflow-auto">
-        <div class="card me-3 p-5" style="min-width: 500px; max-width: 500px;">
-            <div class="card-title">
-                <h4 class="fw-bold">ห้องใหญ่ (Large Room)</h4>
-            </div>
-            <div class="card-body p-0">
-                <p>
-                    <span class="fw-bold">คำอธิบาย : </span><br>
-                    เหมาะสำหรับกลุ่มใหญ่ เช่น งานเลี้ยงบริษัท หรือปาร์ตี้เพื่อนฝูง รองรับระบบเสียงรอบทิศทาง จอโปรเจกเตอร์ขนาดใหญ่ พร้อมโซฟานุ่มเต็มพื้นที่
-                </p>
-                <p>
-                    <span class="fw-bold">ขนาดห้อง: </span> ประมาณ 40–50 ตร.ม.
-                </p>
-                <p>
-                    <span class="fw-bold">ความจุ: </span> 10–15 คน
-                </p>
-                <p>
-                    <span class="fw-bold">ราคาต่อชั่วโมง: </span> 600 บาท
-                </p>
-                <div class="text-end">
-                    <button type="button" class="btn btn-success">จองห้อง</button>
+        <div class="d-flex overflow-auto">
+            {% for room in bigRooms %}
+                <div class="card me-3 p-5" style="min-width: 500px; max-width: 500px;">
+                    <div class="card-title">
+                        <h4 class="fw-bold">{{room.name}}</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <img src="{% static 'img/oceanRoom.png' %}" alt="SamplePicture">
+                        <p>
+                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.room_type.capacity}} คน
+                        </p>
+                        <p>
+                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
+                        </p>
+                        <div class="text-end">
+                            <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
+            {% if not bigRooms %}
+                <p class="text-danger">ไม่มีห้องให้บริการขณะนี้</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container py-3 m-5">
+        <h2 class="fw-bold pb-3">ประเภทห้องขนาดกลาง</h2>
+        <p>
+            {{ mediumRooms.0.room_type.description }}
+        </p>
+
+        <div class="d-flex overflow-auto">
+            {% for room in mediumRooms %}
+                <div class="card me-3 p-5" style="min-width: 500px; max-width: 500px;">
+                    <div class="card-title">
+                        <h4 class="fw-bold">{{room.name}}</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <img src="{% static 'img/oceanRoom.png' %}" alt="SamplePicture">
+                        <p>
+                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.room_type.capacity}} คน
+                        </p>
+                        <p>
+                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
+                        </p>
+                        <div class="text-end">
+                            <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if not bigRooms %}
+                <p class="text-danger">ไม่มีห้องให้บริการขณะนี้</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container py-3 m-5">
+        <h2 class="fw-bold pb-3">ประเภทห้องขนาดเล็ก</h2>
+        <p>
+            {{ smallRooms.0.room_type.description }}
+        </p>
+
+        <div class="d-flex overflow-auto">
+            {% for room in smallRooms %}
+                <div class="card me-3 p-5" style="min-width: 500px; max-width: 500px;">
+                    <div class="card-title">
+                        <h4 class="fw-bold">{{room.name}}</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <img src="{% static 'img/oceanRoom.png' %}" alt="SamplePicture">
+                        <p>
+                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.room_type.capacity}} คน
+                        </p>
+                        <p>
+                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
+                        </p>
+                        <div class="text-end">
+                            <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if not bigRooms %}
+                <p class="text-danger">ไม่มีห้องให้บริการขณะนี้</p>
+            {% endif %}
         </div>
     </div>
 </div>
