@@ -29,6 +29,13 @@
                     </div>
                 </div>
                 <div class="mb-2">
+                    <label for="{{ registerform.username.id_for_label }}" class="form-label">ชื่อผู้ใช้งาน : </label>
+                    {{ registerform.username }}
+                    <div class="text-danger small">
+                        {{ registerform.username.errors }}
+                    </div>
+                </div>
+                <div class="mb-2">
                     <label for="{{ registerform.password1.id_for_label }}" class="form-label">รหัสผ่าน : </label>
                     {{ registerform.password1 }}
                     <div class="text-danger small">
