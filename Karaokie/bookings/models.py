@@ -1,21 +1,24 @@
 from django.db import models
 from datetime import datetime, timedelta
 
-class Room_type(models.Model):
-    name = models.CharField(max_length=50, unique=True, null=False)
-    capacity = models.IntegerField(null=False)
-    price_per_hour = models.IntegerField(null=False)
-    description = models.CharField(max_length=200, null=True)
-
 class Rooms(models.Model):
     class Status(models.TextChoices):
         Reserved = "จองแล้ว"
         InUse = "กำลังใช้งาน"
         Empty = "ห้องว่าง"
 
+    class Type(models.TextChoices):
+        Large = "ห้องขนาดใหญ่"
+        Medium = "ห้องขนาดกลาง"
+        Small = "ห้องขนาดเล็ก"
+
     name = models.CharField(max_length=50, unique=True, null=False)
-    room_type = models.ForeignKey(Room_type, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=Status.choices)
+    price_per_hour = models.IntegerField(null=False)
+    room_type = models.CharField(max_length=20, choices=Type.choices)
+    capacity = models.IntegerField(null=False)
+    description = models.CharField(max_length=200, null=True)
+
 
 class Services(models.Model):
     name = models.CharField(max_length=50, unique=True, null=False)
