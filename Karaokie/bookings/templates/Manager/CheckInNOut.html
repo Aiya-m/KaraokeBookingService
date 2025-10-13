@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load custom_filter %}
+{% block title %} Check In / Out {% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <h3 class="text-center mb-3">Check In</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อห้อง</th>
+                            <th>ชื่อลูกค้า</th>
+                            <th>วันที่เข้ารับบริการ</th>
+                            <th>เวลาที่เข้ารับบริการ</th>
+                            <th>จำนวนลูกค้า</th>
+                            <th>รายละเอียดเพิ่มเติม</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book_in in booking_checkin %}
+                        <tr>
+                            <td>{{ book_in.room.name }}</td>
+                            <td>{{ book_in.user.first_name }}</td>
+                            <td>{{ book_in.booking_date }}</td>
+                            <td>{{ book_in.get_book_time }}</td>
+                            <td>{{ book_in.number_of_customer }}</td>
+                            <td>
+                                <a href="#" data-bs-toggle="modal"
+                                    data-bs-target="#detailsModal{{ book_in.id }}">รายละเอียดเพิ่มเติม</a>
+                                <div class="modal fade" id="detailsModal{{ book_in.id }}" tabindex="-1"
+                                    aria-labelledby="detailsModalLabel{{ book_in.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="detailsModalLabel{{ book_in.id }}">
+                                                    รายละเอียดการจอง</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>ชื่อผู้จอง : {{ book_in.user.first_name }} {{ book_in.user.last_name }}</p>
+                                                <p>เบอร์โทร : {{ book_in.phone }}</p>
+                                                <p>จำนวนลูกค้า : {{ book_in.number_of_customer }}</p>
+                                                <p>วันที่เข้ารับบริการ : {{ book_in.booking_date }}</p>
+                                                <p>เวลาที่เข้ารับบริการ : {{ book_in.get_book_time }}</p>
+                                                <p>หมายเหตุ : {{ book_in.notes }}</p>
+                                                <p>สถานะ : {{ book_in.booking_status }}</p>
+                                                <p>ห้อง : {{ book_in.room.name }} ({{ book_in.room.room_type.name }})</p>
+                                                <p>ยอดเงินทั้งหมด : {{ book_in|get_total_price }}</p>
+                                                <div class="card shadow-lg w-full">
+                                                    <div
+                                                        class="overflow-x-auto bg-white rounded-lg shadow border border-orange-100">
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="p-4">บริการเสริม</th>
+                                                                    <th class="p-4">จำนวน</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tbody>
+                                                                    {% for s in book_in.service.all %}
+                                                                    <tr>
+                                                                        <td>{{ s.name }}</td>
+                                                                        <td>{{ s.price }}</td>
+                                                                    </tr>
+                                                                    {% empty %}
+                                                                    <tr>
+                                                                        <td colspan="2" class="text-center">ไม่มีบริการเสริม</td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCheckoutModal{{ book_in.id }}">เช็กอิน</button>
+                            <div class="modal fade" id="confirmCheckoutModal{{ book_in.id }}" tabindex="-1"
+                                aria-labelledby="confirmCheckoutModalLabel{{ book_in.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-dark text-white">
+                                            <h5 class="modal-title" id="confirmCheckoutModalLabel{{ book_in.id }}">ยืนยันการเช็กอินห้อง {{ book_in.room.name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <div class="d-flex justify-content-center gap-3 mt-3">
+                                                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                                                    ยกเลิก
+                                                </button>
+                                                <form method="POST" action="{% url 'checkinout' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="booking_id" value="{{ book_in.id }}">
+                                                    <button type="submit" name="action" value="checkout" class="btn btn-success px-4">
+                                                        ยืนยัน
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <h3 class="text-center mb-3">Check Out</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อห้อง</th>
+                            <th>ชื่อลูกค้า</th>
+                            <th>วันที่เข้ารับบริการ</th>
+                            <th>เวลาที่เข้ารับบริการ</th>
+                            <th>จำนวนลูกค้า</th>
+                            <th>รายละเอียดเพิ่มเติม</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                        {% for book_out in booking_checkout %}
+                            <tr>
+                                <td>{{ book_out.room.name }}</td>
+                                <td>{{ book_out.user.first_name }}</td>
+                                <td>{{ book_out.booking_date }}</td>
+                                <td>{{ book_out.get_book_time }}</td>
+                                <td>{{ book_out.number_of_customer }}</td>
+                                <td>
+                                    <a href="#" data-bs-toggle="modal"
+                                        data-bs-target="#detailsModal{{ book_out.id }}">รายละเอียดเพิ่มเติม</a>
+                                    <div class="modal fade" id="detailsModal{{ book_out.id }}" tabindex="-1"
+                                        aria-labelledby="detailsModalLabel{{ book_out.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="detailsModalLabel{{ book_out.id }}">
+                                                        รายละเอียดการจอง</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>ชื่อผู้จอง : {{ book_out.user.first_name }} {{ book_out.user.last_name }}</p>
+                                                    <p>เบอร์โทร : {{ book_out.phone }}</p>
+                                                    <p>จำนวนลูกค้า : {{ book_out.number_of_customer }}</p>
+                                                    <p>วันที่เข้ารับบริการ : {{ book_out.booking_date }}</p>
+                                                    <p>เวลาที่เข้ารับบริการ : {{ book_out.get_book_time }}</p>
+                                                    <p>หมายเหตุ : {{ book_out.notes }}</p>
+                                                    <p>สถานะ : {{ book_out.booking_status }}</p>
+                                                    <p>ห้อง : {{ book_out.room.name }} ({{ book_out.room.room_type.name }})</p>
+                                                    <p>ยอดเงินทั้งหมด : {{ book_out|get_total_price }}</p>
+                                                    <div class="card shadow-lg w-full">
+                                                        <div
+                                                            class="overflow-x-auto bg-white rounded-lg shadow border border-orange-100">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="p-4">บริการเสริม</th>
+                                                                        <th class="p-4">จำนวน</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tbody>
+                                                                    {% for s in book_out.service.all %}
+                                                                    <tr>
+                                                                        <td>{{ s.name }}</td>
+                                                                        <td>{{ s.price }}</td>
+                                                                    </tr>
+                                                                    {% empty %}
+                                                                    <tr>
+                                                                        <td colspan="2" class="text-center">ไม่มีบริการเสริม</td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                    <tbody>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

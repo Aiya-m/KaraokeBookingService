@@ -34,11 +34,12 @@ class LoginForm(forms.ModelForm):
 class ManageRoomForm(forms.ModelForm):
     class Meta:
         model = Rooms
-        fields = ["name", "status", "capacity", "description","room_image"]
+        fields = ["name", "status", "price_per_hour", "capacity", "description","room_image"]
         widgets = {
             "name" : forms.TextInput(attrs={"placeholder": "ชื่อห้อง", "class": "form-control"}),
             "status" : forms.Select(attrs={"class": "form-select"}),
+            "price_per_hour" : forms.NumberInput(attrs={"class": "form-control"}),
             "capacity" : forms.NumberInput(attrs={"class": "form-control"}),
-            "description" : forms.Textarea(attrs={"placeholer": "คำอธิบาย", "class": "form-control"}),
-            "room_image" : forms.FileInput
+            "description" : forms.Textarea(attrs={"placeholder": "คำอธิบาย", "class": "form-control", 'rows': 3}),
+            "room_image" : forms.FileInput(attrs={"class": "form-control"})
         }

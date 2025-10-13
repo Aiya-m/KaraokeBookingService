@@ -3,12 +3,35 @@
 {% block title %} Manage Room {% endblock %}
 {% block content %}
 <div class="p-5">
-    <div class="container p-4 shadow-lg">
+    <div class="container p-4 shadow-lg mb-4"">
+        <h3 class="mb-3">ห้องขนาดใหญ่</h3>
         <div class="d-flex overflow-auto">
             {% for big in bigroom %}
-                <div class="card p-4" style="width: 200; height: 200px;">
+                <div class="card p-4" style="width: 200px; height: 200px;">
                     <p>{{ big.name }}</p>
                     <a href="{% url 'edit-room-detail' big.id %}">แก้ไขข้อมูล</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container p-4 shadow-lg mb-4"">
+        <h3 class="mb-3">ห้องขนาดกลาง</h3>
+        <div class="d-flex overflow-auto">
+            {% for med in medroom %}
+                <div class="card p-4" style="width: 200; height: 200px;">
+                    <p>{{ med.name }}</p>
+                    <a href="{% url 'edit-room-detail' med.id %}">แก้ไขข้อมูล</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container p-4 shadow-lg mb-4"">
+        <h3 class="mb-3">ห้องขนาดเล็ก</h3>
+        <div class="d-flex overflow-auto">
+            {% for sml in smlroom %}
+                <div class="card p-4" style="width: 200; height: 200px;">
+                    <p>{{ sml.name }}</p>
+                    <a href="{% url 'edit-room-detail' sml.id %}">แก้ไขข้อมูล</a>
                 </div>
             {% endfor %}
         </div>

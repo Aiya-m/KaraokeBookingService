@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from bookings.models import *
 from django.views import View
 from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm
@@ -76,8 +76,27 @@ class CustomerBooking(LoginRequiredMixin, View):
     
 class BookingList(View):
     def get(self, request):
-        bookinglist = Booking.objects.all()
-        return render(request, 'Manager/BookingList.html', context={"booking_list": bookinglist})
+        booking_pending = Booking.objects.filter(booking_status=Booking.Booking_status.Pending)
+        return render(request, 'Manager/BookingList.html', context={"booking_pending": booking_pending})
+    def post(self, request):
+        booking_id = request.POST.get("booking_id")
+        action = request.POST.get("action")
+
+        if not booking_id:
+            return redirect("bookinglist")
+
+        try:
+            booking = Booking.objects.get(id=booking_id)
+        except Booking.DoesNotExist:
+            return redirect("bookinglist")
+        if action == "reject":
+            booking.delete()
+
+        elif action == "confirm":
+            booking.booking_status = Booking.Booking_status.Check_In
+            booking.save()
+
+        return redirect("bookinglist")
     
 class ManageRoom(View):
     def get(self, request):
@@ -89,5 +108,40 @@ class ManageRoom(View):
     
 class EditRoom(View):
     def get(self, request, room_id):
-        room = get_object_or_404(Rooms, id=room_id)
-        return render(request, 'Manager/ManageRoomDetail.html', context={"room": room})
+        room = Rooms.objects.get(pk=room_id)
+        form = ManageRoomForm(instance=room)
+        return render(request, 'Manager/ManageRoomDetail.html', context={"room": room, "manageroomform": form})
+    
+    def post(self, request, room_id):
+        room = Rooms.objects.get(pk=room_id)
+        form = ManageRoomForm(request.POST, request.FILES, instance=room)
+        print(form.is_valid())
+        if form.is_valid():
+            form.save()
+            return redirect('manage-room')
+        else:
+            print(form.errors)
+        return redirect('manage-room')
+    
+class CheckInNOut(View):
+    def get(self, request):
+        booking_checkin = Booking.objects.filter(booking_status=Booking.Booking_status.Check_In)
+        booking_checkout = Booking.objects.filter(booking_status=Booking.Booking_status.Check_Out)
+        return render(request, 'Manager/CheckInNOut.html', context={"booking_checkin": booking_checkin, "booking_checkout": booking_checkout})
+    
+    def post(self, request):
+        booking_id = request.POST.get("booking_id")
+        action = request.POST.get("action")
+
+        try:
+            booking = Booking.objects.get(id=booking_id)
+        except Booking.DoesNotExist:
+            return redirect("checkinout")
+
+        if action == "checkout":
+            booking.booking_status = Booking.Booking_status.Check_Out
+            booking.room.status = Rooms.Status.Empty
+            booking.room.save()
+            booking.save()
+
+        return redirect("checkinout")

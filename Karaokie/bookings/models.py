@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 class Rooms(models.Model):
     class Status(models.TextChoices):

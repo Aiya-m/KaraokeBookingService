@@ -1,5 +1,5 @@
 from django.urls import path
-from bookings.views import RegisterView, LoginView, CustomerHome, BookingList, CustomerBooking, LogoutView, ManageRoom, EditRoom
+from bookings.views import RegisterView, LoginView, CustomerHome, BookingList, CustomerBooking, LogoutView, ManageRoom, EditRoom, CheckInNOut
 
 urlpatterns = [
     path('', CustomerHome.as_view(), name='customer-home'),
@@ -9,5 +9,6 @@ urlpatterns = [
     path("manager/bookinglist/", BookingList.as_view(), name='bookinglist'),
     path("logout/", LogoutView.as_view(), name='logout'),
     path("manager/manageroom/", ManageRoom.as_view(), name='manage-room'),
-    path("manager/manageroom/<int:room_id>/", EditRoom.as_view(), name='edit-room-detail')
+    path("manager/manageroom/<int:room_id>/", EditRoom.as_view(), name='edit-room-detail'),
+    path("manager/CheckIn-Out/", CheckInNOut.as_view(), name='checkinout')
 ]
