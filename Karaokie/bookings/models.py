@@ -14,9 +14,9 @@ class Rooms(models.Model):
 
     name = models.CharField(max_length=50, unique=True, null=False)
     status = models.CharField(max_length=20, choices=Status.choices)
-    price_per_hour = models.IntegerField(null=False)
+    price_per_hour = models.IntegerField(null=False, default=0)
     room_type = models.CharField(max_length=20, choices=Type.choices)
-    capacity = models.IntegerField(null=False)
+    capacity = models.IntegerField(null=False, default=0)
     description = models.CharField(max_length=200, null=True)
 
 
@@ -55,7 +55,7 @@ class Booking(models.Model):
         end_datetime = datetime.combine(datetime.today(), self.end_time)
 
         duration = (end_datetime - start_datetime)/3600
-        price = duration.total_seconds() * room.room_type.price_per_hour
+        price = duration.total_seconds() * room.price_per_hour
         return price
 
 
