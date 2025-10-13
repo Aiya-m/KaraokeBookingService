@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from bookings.models import *
 from django.views import View
-from bookings.forms import RegisterModelForm, LoginForm
+from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm
 from bookings.models import Rooms
 from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
@@ -78,3 +78,16 @@ class BookingList(View):
     def get(self, request):
         bookinglist = Booking.objects.all()
         return render(request, 'Manager/BookingList.html', context={"booking_list": bookinglist})
+    
+class ManageRoom(View):
+    def get(self, request):
+        form = ManageRoomForm()
+        bigRoom = Rooms.objects.filter(room_type=Rooms.Type.Large)
+        medRoom = Rooms.objects.filter(room_type=Rooms.Type.Medium)
+        smlRoom = Rooms.objects.filter(room_type=Rooms.Type.Small)
+        return render(request, 'Manager/ManageRoom.html', context={"bigroom": bigRoom, "medroom": medRoom, "smlRoom": smlRoom, "manageroomform": form})
+    
+class EditRoom(View):
+    def get(self, request, room_id):
+        room = get_object_or_404(Rooms, id=room_id)
+        return render(request, 'Manager/ManageRoomDetail.html', context={"room": room})

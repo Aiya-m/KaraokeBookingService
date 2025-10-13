@@ -1,5 +1,5 @@
 from django import forms
-from bookings.models import Room_type, Rooms, Booking, Services, BookingServices, Payments
+from bookings.models import Rooms, Booking, Services, BookingServices, Payments
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -29,4 +29,16 @@ class LoginForm(forms.ModelForm):
         widgets = {
             "username" : forms.TextInput(attrs={"placeholder": "ชื่อผู้ใช้", "class": "form-control"}),
             "password" : forms.PasswordInput(attrs={"placeholder": "รหัสผ่าน", "class": "form-control"})
+        }
+
+class ManageRoomForm(forms.ModelForm):
+    class Meta:
+        model = Rooms
+        fields = ["name", "status", "capacity", "description","room_image"]
+        widgets = {
+            "name" : forms.TextInput(attrs={"placeholder": "ชื่อห้อง", "class": "form-control"}),
+            "status" : forms.Select(attrs={"class": "form-select"}),
+            "capacity" : forms.NumberInput(attrs={"class": "form-control"}),
+            "description" : forms.Textarea(attrs={"placeholer": "คำอธิบาย", "class": "form-control"}),
+            "room_image" : forms.FileInput
         }

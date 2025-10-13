@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load custom_filter %}
+{% block title %} Manage Room {% endblock %}
+{% block content %}
+<div class="p-5">
+    <div class="container p-4 shadow-lg">
+        <div class="d-flex overflow-auto">
+            {% for big in bigroom %}
+                <div class="card p-4" style="width: 200; height: 200px;">
+                    <p>{{ big.name }}</p>
+                    <a href="{% url 'edit-room-detail' big.id %}">แก้ไขข้อมูล</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

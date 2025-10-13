@@ -18,6 +18,7 @@ class Rooms(models.Model):
     room_type = models.CharField(max_length=20, choices=Type.choices)
     capacity = models.IntegerField(null=False, default=0)
     description = models.CharField(max_length=200, null=True)
+    room_image = models.FileField(upload_to="Room_IMG/", blank=True, null=True)
 
 
 class Services(models.Model):
@@ -71,6 +72,6 @@ class Payments(models.Model):
         Paid = "ชำระเงินแล้ว"
 
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
-    payment_slip = models.BinaryField(null=False)
+    payment_slip = models.FileField(upload_to="Payment_Slip/", blank=True, null=True)
     payment_status = models.CharField(max_length=20, choices=Pay_status.choices)
     pay_date = models.DateTimeField(null=False)

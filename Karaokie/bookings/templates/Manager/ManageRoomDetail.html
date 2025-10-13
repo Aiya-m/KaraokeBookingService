@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load custom_filter %}
+{% block title %} Edit Room Detail {% endblock %}
+{% block content %}
+<div class="container p-5">
+    <div class="card shadow-lg p-4">
+        <h3>ชื่อห้อง: {{ room.name }}</h3>
+        <p>ประเภท: {{ room.room_type }}</p>
+        <p>สถานะ: {{ room.status }}</p>
+        <p>ราคา/ชั่วโมง: {{ room.price_per_hour }}</p>
+        <p>ความจุ: {{ room.capacity }}</p>
+        <p>รายละเอียด: {{ room.description }}</p>
+        <a href="{% url 'manage-room' %}" class="btn btn-secondary mt-3">ย้อนกลับ</a>
+    </div>
+</div>
+{% endblock %}
