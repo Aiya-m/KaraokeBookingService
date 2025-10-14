@@ -5,6 +5,13 @@
 <div class="container d-flex justify-content-center">
     <div class="shadow-lg m-5 p-5 w-50">
         <h1 class="text-center fw-bold pb-3">ลงทะเบียนจองห้อง</h1>
+        {% if bookingform.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in bookingform.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <form method="post" enctype="multipart/form-data" class="mx-5">
             {% csrf_token %}
             <div class="mb-2">
