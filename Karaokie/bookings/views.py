@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from bookings.models import *
 from django.views import View
-from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm
+from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm, PaymentsForm
 from bookings.models import Rooms
 from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
@@ -72,34 +72,44 @@ class CustomerBooking(LoginRequiredMixin, View):
         bookingform = BookingForm()
         roomsform = RoomsForm()
         servicesform = ServicesForm()
+        paymentsform = PaymentsForm()
         return render(request, 'Customer/bookingPage.html', {
             'bookingform': bookingform,
             'roomsform': roomsform,
-            'servicesform': servicesform
+            'servicesform': servicesform,
+            'paymentsform': paymentsform
         })
         
     def post(self, request):
         rooms_form = RoomsForm(request.POST)
         services_form = ServicesForm(request.POST)
         booking = BookingForm(request.POST)
+        payment = PaymentsForm(request.POST, request.FILES)
 
         selected_room = None
         selected_service = None
 
         try:
             with transaction.atomic():
-                if booking.is_valid() and rooms_form.is_valid() and services_form.is_valid():
-                    selected_room = rooms_form.cleaned_data.get('room')
-                    selected_service = services_form.cleaned_data.get('services')
-
+                if booking.is_valid() and payment.is_valid() and rooms_form.is_valid():
                     booking = booking.save(commit=False)
                     booking.user = request.user
                     booking.booking_status = Booking.Booking_status.Pending
+
+                    selected_room = rooms_form.cleaned_data.get('room')
                     if selected_room:
                         booking.room = selected_room
-                    if selected_service:
-                        booking.service = selected_service
                     booking.save()
+
+                    if services_form.is_valid():
+                        selected_services = services_form.cleaned_data.get('services')
+                        if selected_services:
+                            booking.service.set(selected_services)
+                    booking.save()
+
+                    payment = payment.save(commit=False)
+                    payment.booking = booking
+                    payment.save()
                     print('inserted in db')
 
                     return redirect('customer-booking')
