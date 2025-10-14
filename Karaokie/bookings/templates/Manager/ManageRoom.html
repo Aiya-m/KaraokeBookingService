@@ -36,5 +36,30 @@
             {% endfor %}
         </div>
     </div>
+    <div class="container p-4 shadow-lg mb-4 text-center" style="max-width: 600px;">
+        <h3 class="mb-3">บริการ</h3>
+        <div class="d-flex overflow-auto">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>ชื่อบริการ</th>
+                        <th>ราคา</th>
+                        <th>แก้ไข</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ser in service %}
+                    <tr>
+                        <td> {{ ser.name }} </td>
+                        <td> {{ ser.price }} </td>
+                        <td>
+                            <a>แก้ไข</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

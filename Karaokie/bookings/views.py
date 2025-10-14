@@ -104,7 +104,8 @@ class ManageRoom(View):
         bigRoom = Rooms.objects.filter(room_type=Rooms.Type.Large)
         medRoom = Rooms.objects.filter(room_type=Rooms.Type.Medium)
         smlRoom = Rooms.objects.filter(room_type=Rooms.Type.Small)
-        return render(request, 'Manager/ManageRoom.html', context={"bigroom": bigRoom, "medroom": medRoom, "smlRoom": smlRoom, "manageroomform": form})
+        service = Services.objects.all()
+        return render(request, 'Manager/ManageRoom.html', context={"bigroom": bigRoom, "medroom": medRoom, "smlRoom": smlRoom, "service": service, "manageroomform": form})
     
 class EditRoom(View):
     def get(self, request, room_id):

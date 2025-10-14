@@ -28,7 +28,7 @@ class Services(models.Model):
 class Booking(models.Model):
     class Booking_status(models.TextChoices):
         Pending = "รอดำเนินการ"
-        Confirmed = "ยืนยันการจอง"
+        Confirmed = "การจองสำเร็จแล้ว"
         Rejected = "ปฏิเสธ"
         Cancel = "ยกเลิก"
         Check_In = "เช็กอิน"
