@@ -2,98 +2,139 @@
 {% load custom_filter %}
 {% block title %} Manage Room {% endblock %}
 {% block content %}
-<div class="p-5">
-    <div class="container p-4 shadow-lg mb-4"">
-        <h3 class="mb-3">ห้องขนาดใหญ่</h3>
-        <div class="d-flex overflow-auto">
-            {% for big in bigroom %}
-                <div class="card p-4" style="width: 200px; height: 200px;">
-                    <p>{{ big.name }}</p>
-                    <a href="{% url 'edit-room-detail' big.id %}">แก้ไขข้อมูล</a>
-                </div>
-            {% endfor %}
+<div class="container py-5">
+
+    <div class="card shadow mb-5 border-0">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">ห้องขนาดใหญ่</h4>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-3 justify-content-start">
+                {% for big in bigroom %}
+                    <div class="card shadow-sm" style="width: 200px;">
+                        {% if big.room_image %}
+                            <img src="{{ big.room_image.url }}" alt="{{ big.name }}" 
+                                 class="card-img-top" style="height: 120px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body text-center p-2">
+                            <p class="fw-bold mb-2">{{ big.name }}</p>
+                            <a href="{% url 'edit-room-detail' big.id %}" class="btn btn-sm btn-outline-primary">แก้ไขข้อมูล</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="container p-4 shadow-lg mb-4"">
-        <h3 class="mb-3">ห้องขนาดกลาง</h3>
-        <div class="d-flex overflow-auto">
-            {% for med in medroom %}
-                <div class="card p-4" style="width: 200; height: 200px;">
-                    <p>{{ med.name }}</p>
-                    <a href="{% url 'edit-room-detail' med.id %}">แก้ไขข้อมูล</a>
-                </div>
-            {% endfor %}
+
+    <div class="card shadow mb-5 border-0">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">ห้องขนาดกลาง</h4>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-3 justify-content-start">
+                {% for med in medroom %}
+                    <div class="card shadow-sm" style="width: 200px;">
+                        {% if med.room_image %}
+                            <img src="{{ med.room_image.url }}" alt="{{ med.name }}" class="card-img-top" style="height: 120px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body text-center p-2">
+                            <p class="fw-bold mb-2">{{ med.name }}</p>
+                            <a href="{% url 'edit-room-detail' med.id %}" class="btn btn-sm btn-outline-primary">แก้ไขข้อมูล</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="container p-4 shadow-lg mb-4"">
-        <h3 class="mb-3">ห้องขนาดเล็ก</h3>
-        <div class="d-flex overflow-auto">
-            {% for sml in smlRoom %}
-                <div class="card p-4" style="width: 200; height: 200px;">
-                    <p>{{ sml.name }}</p>
-                    <a href="{% url 'edit-room-detail' sml.id %}">แก้ไขข้อมูล</a>
-                </div>
-            {% endfor %}
+
+    <div class="card shadow mb-5 border-0">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">ห้องขนาดเล็ก</h4>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-3 justify-content-start">
+                {% for sml in smlRoom %}
+                    <div class="card shadow-sm" style="width: 200px;">
+                        {% if sml.room_image %}
+                            <img src="{{ sml.room_image.url }}" alt="{{ sml.name }}" 
+                                 class="card-img-top" style="height: 120px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body text-center p-2">
+                            <p class="fw-bold mb-2">{{ sml.name }}</p>
+                            <a href="{% url 'edit-room-detail' sml.id %}" class="btn btn-sm btn-outline-primary">แก้ไขข้อมูล</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="container p-4 shadow-lg mb-4 text-center" style="max-width: 600px;">
-        <h3 class="mb-3">บริการ</h3>
-        <div class="d-flex overflow-auto">
-            <table class="table table-bordered align-middle">
-                <thead>
-                    <tr>
-                        <th>ชื่อบริการ</th>
-                        <th>ราคา</th>
-                        <th>แก้ไข</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ser in service %}
-                    <tr>
-                        <td> {{ ser.name }} </td>
-                        <td> {{ ser.price }} </td>
-                        <td>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCheckoutModal{{ ser.id }}">แก้ไข</button>
+
+    <div class="card shadow border-0 mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">บริการ</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>ชื่อบริการ</th>
+                            <th>ราคา</th>
+                            <th>แก้ไข</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ser in service %}
+                        <tr>
+                            <td>{{ ser.name }}</td>
+                            <td>{{ ser.price }}</td>
+                            <td>
+                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCheckoutModal{{ ser.id }}">
+                                    แก้ไข
+                                </button>
+
+                                <!-- Modal -->
                                 <div class="modal fade" id="confirmCheckoutModal{{ ser.id }}" tabindex="-1"
                                     aria-labelledby="confirmCheckoutModalLabel{{ ser.id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header bg-dark text-white">
-                                                <h5 class="modal-title" id="confirmCheckoutModalLabel{{ ser.id }}">แก้ไขบริการ {{ ser.name }}</h5>
+                                                <h5 class="modal-title" id="confirmCheckoutModalLabel{{ ser.id }}">
+                                                    แก้ไขบริการ {{ ser.name }}
+                                                </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center">
-                                                <div class="d-flex justify-content-center gap-3 mt-3">
-                                                    <form method="POST" action="{% url 'manage-room' %}">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="service_id" value="{{ ser.id }}">
-                                                        <div>
-                                                            <label for="{{ serviceedit.name.id_for_label }}" class="block text-sm font-medium text-gray-700">ชื่อบริการ</label>
-                                                            {{ serviceedit.name }}
-                                                        </div>
-                                                        <div>
-                                                            <label for="{{ serviceedit.price.id_for_label }}" class="block text-sm font-medium text-gray-700">ราคา</label>
-                                                            {{ serviceedit.price }}
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                                ยกเลิก
-                                                            </button>
-                                                            <button type="submit" name="edit_service" value="true" class="btn btn-success">
-                                                                บันทึก
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
+                                                <form method="POST" action="{% url 'manage-room' %}" class="text-start">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="service_id" value="{{ ser.id }}">
+                                                    <div class="mb-3">
+                                                        <label for="{{ serviceedit.name.id_for_label }}" class="form-label">ชื่อบริการ</label>
+                                                        {{ serviceedit.name }}
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="{{ serviceedit.price.id_for_label }}" class="form-label">ราคา</label>
+                                                        {{ serviceedit.price }}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            ยกเลิก
+                                                        </button>
+                                                        <button type="submit" name="edit_service" value="true" class="btn btn-success">
+                                                            บันทึก
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

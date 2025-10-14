@@ -1,107 +1,123 @@
 {% extends 'base.html' %}
 {% load custom_filter %}
-{% block title %} Booking List {% endblock %}
+{% block title %} Booking Requests {% endblock %}
 {% block content %}
-<div class="container pt-5">
-    <h2 class="text-center mb-4">คำขอการจอง</h2>
-    <div class="card shadow-lg w-full">
-        <div class="overflow-x-auto bg-white rounded-lg shadow border border-orange-100">
-            <table class="table table-bordered align-middle">
-                <thead>
-                    <tr>
-                        <th class="p-4">วันที่จอง</th>
-                        <th class="p-4">ชื่อห้อง</th>
-                        <th class="p-4">วันที่เข้ารับบริการ</th>
-                        <th class="p-4">เวลาที่เข้ารับบริการ</th>
-                        <th class="p-4">ชื่อลูกค้า</th>
-                        <th class="p-4">จำนวนลูกค้า</th>
-                        <th class="p-4">เบอร์โทรศัพท์</th>
-                        <th class="p-4">รายละเอียดเพิ่มเติม</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tbody>
-                    {% for book in booking_pending %}
-                    <tr>
-                        <td>{{ book.create_date }}</td>
-                        <td>{{ book.room.name }}</td>
-                        <td>{{ book.booking_date }}</td>
-                        <td>{{ book.get_book_time }}</td>
-                        <td>{{ book.user.first_name }}</td>
-                        <td>{{ book.number_of_customer }}</td>
-                        <td>{{ book.phone }}</td>
-                        <td>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#detailsModal{{ book.id }}">
-                                รายละเอียดเพิ่มเติม
-                            </a>
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">คำขอการจอง</h2>
+        <hr class="w-25 mx-auto mb-4 border-dark">
+    </div>
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>วันที่จอง</th>
+                            <th>ชื่อห้อง</th>
+                            <th>วันที่เข้ารับบริการ</th>
+                            <th>เวลาที่เข้ารับบริการ</th>
+                            <th>ชื่อลูกค้า</th>
+                            <th>จำนวนลูกค้า</th>
+                            <th>เบอร์โทรศัพท์</th>
+                            <th>รายละเอียดเพิ่มเติม</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in booking_pending %}
+                        <tr>
+                            <td>{{ book.create_date }}</td>
+                            <td>{{ book.room.name }}</td>
+                            <td>{{ book.booking_date }}</td>
+                            <td>{{ book.get_book_time }}</td>
+                            <td>{{ book.user.first_name }}</td>
+                            <td>{{ book.number_of_customer }}</td>
+                            <td>{{ book.phone }}</td>
+                            <td class="text-center">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailsModal{{ book.id }}">รายละเอียด</button>
 
-                            <div class="modal fade" id="detailsModal{{ book.id }}" tabindex="-1"
-                                aria-labelledby="detailsModalLabel{{ book.id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="detailsModalLabel{{ book.id }}">รายละเอียดการจอง
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>ชื่อผู้จอง : {{ book.user.first_name }} {{ book.user.last_name }}</p>
-                                            <p>เบอร์โทร : {{ book.phone }}</p>
-                                            <p>จำนวนลูกค้า : {{ book.number_of_customer }}</p>
-                                            <p>วันที่เข้ารับบริการ : {{ book.booking_date }}</p>
-                                            <p>เวลาที่เข้ารับบริการ : {{ book.get_book_time }}</p>
-                                            <p>หมายเหตุ : {{ book.notes }}</p>
-                                            <p>สถานะ : {{ book.booking_status }}</p>
-                                            <p>ค่าบริการรวม : {{ book|get_total_price }}</p>
-                                            <p>ห้อง : {{ book.room.name }} ({{ book.room.room_type }})</p>
+                                <div class="modal fade" id="detailsModal{{ book.id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ book.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-dark text-white">
+                                                <h5 class="modal-title" id="detailsModalLabel{{ book.id }}">รายละเอียดการจอง</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <p><strong>ชื่อผู้จอง:</strong> {{ book.user.first_name }} {{ book.user.last_name }}</p>
+                                                        <p><strong>เบอร์โทร:</strong> {{ book.phone }}</p>
+                                                        <p><strong>จำนวนลูกค้า:</strong> {{ book.number_of_customer }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p><strong>วันที่เข้ารับบริการ:</strong> {{ book.booking_date }}</p>
+                                                        <p><strong>เวลา:</strong> {{ book.get_book_time }}</p>
+                                                        <p><strong>สถานะ:</strong> {{ book.booking_status }}</p>
+                                                    </div>
+                                                </div>
 
-                                            <p>บริการเสริม:</p>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ชื่อบริการ</th>
-                                                        <th>ราคา</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for s in book.service.all %}
-                                                    <tr>
-                                                        <td>{{ s.name }}</td>
-                                                        <td>{{ s.price }}</td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                        <td colspan="2" class="text-center">ไม่มีบริการเสริม</td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <form method="POST" action="{% url 'bookinglist' %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="booking_id" value="{{ book.id }}">
-                                                <button type="submit" name="action" value="reject"
-                                                    class="btn btn-secondary">
-                                                    ปฏิเสธ
-                                                </button>
-                                                <button type="submit" name="action" value="confirm"
-                                                    class="btn btn-primary">
-                                                    ยืนยัน
-                                                </button>
-                                            </form>
+                                                <p><strong>ห้อง:</strong> {{ book.room.name }} ({{ book.room.room_type }})</p>
+                                                <p><strong>หมายเหตุ:</strong> {{ book.notes }}</p>
+                                                <p><strong>ค่าบริการรวม:</strong> {{ book|get_total_price }}</p>
+
+                                                <hr>
+                                                <h6 class="fw-bold mb-3">บริการเสริม</h6>
+                                                <table class="table table-sm table-bordered">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>ชื่อบริการ</th>
+                                                            <th>ราคา</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for s in book.service.all %}
+                                                        <tr>
+                                                            <td>{{ s.name }}</td>
+                                                            <td>{{ s.price }}</td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                            <td colspan="2" class="text-center text-muted">ไม่มีบริการเสริม</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                {% if book.payments.payment_slip %}
+                                                <hr>
+                                                <h6 class="fw-bold mb-2">สลิปการชำระเงิน</h6>
+                                                    <div class="text-center">
+                                                        <img src="{{ book.payments.payment_slip.url }}" alt="สลิปการชำระเงิน" class="img-fluid rounded shadow-sm" style="max-height: 400px;">
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="modal-footer d-flex justify-content-between">
+                                                <form method="POST" action="{% url 'bookinglist' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="booking_id" value="{{ book.id }}">
+                                                    <button type="submit" name="action" value="reject"
+                                                        class="btn btn-outline-secondary px-4">
+                                                        ปฏิเสธ
+                                                    </button>
+                                                    <button type="submit" name="action" value="confirm"
+                                                        class="btn btn-primary px-4">
+                                                        ยืนยัน
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">ไม่มีคำขอการจองในขณะนี้</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
