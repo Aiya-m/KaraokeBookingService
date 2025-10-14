@@ -20,10 +20,14 @@ class Rooms(models.Model):
     description = models.CharField(max_length=200, null=True)
     room_image = models.FileField(upload_to="Room_IMG/", blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.name} ({self.room_type})'
 
 class Services(models.Model):
     name = models.CharField(max_length=50, unique=True, null=False)
     price = models.IntegerField(null=False)
+    def __str__(self):
+        return f'{self.name}'
 
 class Booking(models.Model):
     class Booking_status(models.TextChoices):
