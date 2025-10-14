@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} KaraOkkie {% endblock %}
+{% block content %}
+<div class="container justify-content-center">
+    <div class="container my-5">
+    <h1 class="mb-4 text-center">ข้อมูลผู้ใช้งาน</h1>
+
+    {% if not edit_mode %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>ชื่อจริง: </strong> {{ registerform.instance.first_name }}</li>
+                    <li class="list-group-item"><strong>นามสกุล: </strong> {{ registerform.instance.last_name }}</li>
+                    <li class="list-group-item"><strong>อีเมล: </strong> {{ registerform.instance.email }}</li>
+                    <li class="list-group-item"><strong>ชื่อผู้ใช้งาน: </strong> {{ registerform.instance.username }}</li>
+                </ul>
+                <div class="text-center mt-4">
+                    <a href="?edit=1" class="btn btn-primary">แก้ไขข้อมูล</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">ชื่อจริง</label>
+                        {{ registerform.first_name }}
+                        {% if registerform.first_name.errors %}
+                            <div class="text-danger small mt-1">{{ registerform.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">นามสกุล</label>
+                        {{ registerform.last_name }}
+                        {% if registerform.last_name.errors %}
+                            <div class="text-danger small mt-1">{{ registerform.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">อีเมล</label>
+                        {{ registerform.email }}
+                        {% if registerform.email.errors %}
+                            <div class="text-danger small mt-1">{{ registerform.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">ชื่อผู้ใช้งาน</label>
+                        {{ registerform.username }}
+                        {% if registerform.username.errors %}
+                            <div class="text-danger small mt-1">{{ registerform.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">บันทึกข้อมูล</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
