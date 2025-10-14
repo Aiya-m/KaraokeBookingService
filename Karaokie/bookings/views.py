@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseForbidden
+from django.utils import timezone
 
 # Create your views here.
 class RegisterView(View):
@@ -92,36 +93,71 @@ class CustomerBooking(LoginRequiredMixin, View):
 
         try:
             with transaction.atomic():
-                if booking.is_valid() and payment.is_valid() and rooms_form.is_valid():
-                    booking = booking.save(commit=False)
-                    booking.user = request.user
-                    booking.booking_status = Booking.Booking_status.Pending
-
+                if rooms_form.is_valid() and booking.is_valid() and payment.is_valid():
                     selected_room = rooms_form.cleaned_data.get('room')
-                    if selected_room:
-                        booking.room = selected_room
-                    booking.save()
+                    booking_obj = booking.save(commit=False)
+                    booking_obj.user = request.user
+                    booking_obj.booking_status = Booking.Booking_status.Pending
+
+                    if not selected_room:
+                        booking.add_error(None, "กรุณาเลือกห้องก่อนทำการจอง")
+                        raise ValueError("No room selected")
+
+                    booking_obj.room = selected_room
+
+                    booking_date = booking_obj.booking_date
+                    start_time = booking_obj.start_time
+                    end_time = booking_obj.end_time
+                    number_of_customer = booking_obj.number_of_customer
+
+                    if number_of_customer > selected_room.capacity:
+                        booking.add_error("number_of_customer", f"จำนวนคนไม่ควรเกิน {selected_room.capacity} คน")
+
+                    if booking_date < timezone.now().date():
+                        booking.add_error("booking_date", "ไม่สามารถเลือกวันที่ย้อนหลังได้")
+
+                    if start_time >= end_time:
+                        booking.add_error(None, "เวลาใช้บริการไม่ถูกต้อง")
+
+                    overlap = Booking.objects.filter(
+                        room=selected_room,
+                        booking_date=booking_date,
+                        start_time__lt=end_time,
+                        end_time__gt=start_time
+                    ).exists()
+                    if overlap:
+                        booking.add_error(None, "ช่วงเวลานี้ถูกจองไปแล้ว")
+
+                    if booking.errors:
+                        raise ValueError("Booking validation failed")
+
+                    booking_obj.save()
 
                     if services_form.is_valid():
                         selected_services = services_form.cleaned_data.get('services')
                         if selected_services:
-                            booking.service.set(selected_services)
-                    booking.save()
+                            booking_obj.service.set(selected_services)
 
-                    payment = payment.save(commit=False)
-                    payment.booking = booking
-                    payment.save()
-                    print('inserted in db')
+                    payment_obj = payment.save(commit=False)
+                    payment_obj.booking = booking_obj
+                    payment_obj.save()
 
-                    return redirect('customer-booking')
+                    print("inserted in db")
+                    return redirect("customer-booking")
 
                 else:
-                    print("Error in else")
-                    raise transaction.TransactionManagementError("Error")
-            return redirect('customer-booking')
+                    print("Form invalid:", booking.errors, rooms_form.errors, payment.errors)
+                    raise transaction.TransactionManagementError("Invalid form input")
+
+            return redirect('customer-history')
         except Exception as e:
             print("transaction exception", e)
-            return redirect('customer-home')
+            return render(request, "Customer/bookingPage.html", {
+                "bookingform": booking,
+                "roomsform": rooms_form,
+                "servicesform": services_form,
+                "paymentsform": payment,
+            })
         
 class CustomerHistory(View):
     def get(self, request):
