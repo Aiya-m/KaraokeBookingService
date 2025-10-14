@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} KaraOkkie {% endblock %}
+{% block content %}
+<div class="container justify-content-center">
+    <h1>ประวัติการจอง</h1>
+    <div class="container my-4">
+        {% if bookings %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for booking in bookings %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                Booking วันที่: {{ booking.booking_date }}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    ห้อง: {{ booking.room.name }}
+                                </h5>
+                                <p class="card-text mb-1">
+                                    จำนวนผู้เข้าพัก: {{ booking.number_of_customer }}<br>
+                                    โทรศัพท์: {{ booking.phone }}<br>
+                                    เวลา: {{ booking.start_time }} - {{ booking.end_time }}
+                                </p>
+
+                                <p class="mb-1">
+                                    <strong>บริการเพิ่มเติม:</strong>
+                                    {% if booking.service.all %}
+                                        {% for ser in booking.service.all %}
+                                            <span class="badge bg-info text-dark">{{ ser.name }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted">ไม่มีบริการเพิ่มเติม</span>
+                                    {% endif %}
+                                </p>
+
+                                <p class="mb-1">
+                                    <strong>หมายเหตุ:</strong>
+                                    {% if booking.notes %}
+                                        {{ booking.notes }}
+                                    {% else %}
+                                        <span class="text-muted">ไม่มีหมายเหตุ</span>
+                                    {% endif %}
+                                </p>
+
+                                <p class="mb-0">
+                                    <strong>ใบเสร็จชำระเงิน:</strong><br>
+                                    {% if booking.payments %}
+                                        <img src="{{ booking.payments.payment_slip.url }}" class="img-fluid mb-2" alt="Slip" style="max-height:150px;"><br>
+                                        วันที่ชำระเงิน: {{ booking.payments.pay_date }}
+                                    {% else %}
+                                        <span class="text-danger">ยังไม่มีการชำระเงิน</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span>สถานะ: {{ booking.get_booking_status_display }}</span>
+                                <form method="post" action="{% url 'cancel-booking' booking.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">ยกเลิกการจอง</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-danger text-center">ไม่มีการจอง</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
