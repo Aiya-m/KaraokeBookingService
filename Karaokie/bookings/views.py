@@ -121,6 +121,19 @@ class CustomerBooking(LoginRequiredMixin, View):
         except Exception as e:
             print("transaction exception", e)
             return redirect('customer-home')
+        
+class CustomerHistory(View):
+    def get(self, request):
+        bookings = Booking.objects.filter(user=request.user)
+        return render(request, 'Customer/historyPage.html', {
+            'bookings': bookings
+        })
+    
+    def post(self, request, id):
+        booking = Booking.objects.get(id=id)
+        booking.delete()
+
+        return redirect('customer-history')
 
     
 class BookingList(View):
