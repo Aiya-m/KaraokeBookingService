@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from bookings.models import *
 from django.views import View
-from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm, PaymentsForm, ServiceEditForm
+from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm, PaymentsForm, ServiceEditForm, CustomerUpdateForm
 from bookings.models import Rooms
 from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
@@ -89,7 +89,6 @@ class CustomerBooking(LoginRequiredMixin, View):
         payment = PaymentsForm(request.POST, request.FILES)
 
         selected_room = None
-        selected_service = None
 
         try:
             with transaction.atomic():
@@ -137,6 +136,26 @@ class CustomerHistory(View):
 
         return redirect('customer-history')
 
+class CustomerProfile(View):
+    def get(self, request):
+        user = request.user
+        edit_mode = request.GET.get('edit') == '1'
+        form = CustomerUpdateForm(instance=user)
+        return render(request, 'Customer/profilePage.html', {
+            'registerform': form,
+            'edit_mode': edit_mode
+        })
+
+    def post(self, request):
+        user = request.user
+        form = CustomerUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('customer-profile')
+        return render(request, 'Customer/profilePage.html', {
+            'registerform': form,
+            'edit_mode': True 
+        })
     
 class BookingList(PermissionRequiredMixin, View):
     permission_required = ["bookings.delete_booking"]
