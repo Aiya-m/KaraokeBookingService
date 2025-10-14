@@ -100,7 +100,7 @@
                                                 <form method="POST" action="{% url 'checkinout' %}">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="booking_id" value="{{ book_in.id }}">
-                                                    <button type="submit" name="action" value="checkout" class="btn btn-success px-4">
+                                                    <button type="submit" name="action" value="checkin" class="btn btn-success px-4">
                                                         ยืนยัน
                                                     </button>
                                                 </form>
@@ -194,6 +194,34 @@
                                         </div>
                                     </div>
                                 </td>
+                                <td>
+                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCheckoutModal{{ book_out.id }}">เช็กเอาท์</button>
+                                <div class="modal fade" id="confirmCheckoutModal{{ book_out.id }}" tabindex="-1"
+                                    aria-labelledby="confirmCheckoutModalLabel{{ book_out.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-dark text-white">
+                                                <h5 class="modal-title" id="confirmCheckoutModalLabel{{ book_out.id }}">ยืนยันการเช็กเอาท์ห้อง {{ book_out.room.name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <div class="d-flex justify-content-center gap-3 mt-3">
+                                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                                                        ยกเลิก
+                                                    </button>
+                                                    <form method="POST" action="{% url 'checkinout' %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="booking_id" value="{{ book_out.id }}">
+                                                        <button type="submit" name="action" value="checkout" class="btn btn-success px-4">
+                                                            ยืนยัน
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                             </tr>
                             {% endfor %}
                     <tbody>

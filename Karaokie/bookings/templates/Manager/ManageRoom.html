@@ -28,7 +28,7 @@
     <div class="container p-4 shadow-lg mb-4"">
         <h3 class="mb-3">ห้องขนาดเล็ก</h3>
         <div class="d-flex overflow-auto">
-            {% for sml in smlroom %}
+            {% for sml in smlRoom %}
                 <div class="card p-4" style="width: 200; height: 200px;">
                     <p>{{ sml.name }}</p>
                     <a href="{% url 'edit-room-detail' sml.id %}">แก้ไขข้อมูล</a>
@@ -53,7 +53,42 @@
                         <td> {{ ser.name }} </td>
                         <td> {{ ser.price }} </td>
                         <td>
-                            <a>แก้ไข</a>
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCheckoutModal{{ ser.id }}">แก้ไข</button>
+                                <div class="modal fade" id="confirmCheckoutModal{{ ser.id }}" tabindex="-1"
+                                    aria-labelledby="confirmCheckoutModalLabel{{ ser.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-dark text-white">
+                                                <h5 class="modal-title" id="confirmCheckoutModalLabel{{ ser.id }}">แก้ไขบริการ {{ ser.name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <div class="d-flex justify-content-center gap-3 mt-3">
+                                                    <form method="POST" action="{% url 'manage-room' %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="service_id" value="{{ ser.id }}">
+                                                        <div>
+                                                            <label for="{{ serviceedit.name.id_for_label }}" class="block text-sm font-medium text-gray-700">ชื่อบริการ</label>
+                                                            {{ serviceedit.name }}
+                                                        </div>
+                                                        <div>
+                                                            <label for="{{ serviceedit.price.id_for_label }}" class="block text-sm font-medium text-gray-700">ราคา</label>
+                                                            {{ serviceedit.price }}
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                ยกเลิก
+                                                            </button>
+                                                            <button type="submit" name="edit_service" value="true" class="btn btn-success">
+                                                                บันทึก
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         </td>
                     </tr>
                     {% endfor %}
