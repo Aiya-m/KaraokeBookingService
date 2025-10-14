@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
 from bookings.models import *
 from django.views import View
-from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm, PaymentsForm
+from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm, PaymentsForm, ServiceEditForm
 from bookings.models import Rooms
 from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import transaction
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 class RegisterView(View):
@@ -42,7 +44,7 @@ class LoginView(View):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            if user.is_staff :
+            if user.groups.filter(name='Manager').exists() :
                 return redirect('bookinglist')
             else:
                 return redirect('customer-home')
@@ -136,10 +138,15 @@ class CustomerHistory(View):
         return redirect('customer-history')
 
     
-class BookingList(View):
+class BookingList(PermissionRequiredMixin, View):
+    permission_required = ["bookings.delete_booking"]
     def get(self, request):
-        booking_pending = Booking.objects.filter(booking_status=Booking.Booking_status.Pending)
-        return render(request, 'Manager/BookingList.html', context={"booking_pending": booking_pending})
+        if request.user.groups.filter(name='Manager').exists():
+            booking_pending = Booking.objects.filter(booking_status=Booking.Booking_status.Pending)
+            return render(request, 'Manager/BookingList.html', context={"booking_pending": booking_pending})
+        else:
+            return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
+
     def post(self, request):
         booking_id = request.POST.get("booking_id")
         action = request.POST.get("action")
@@ -160,37 +167,65 @@ class BookingList(View):
 
         return redirect("bookinglist")
     
-class ManageRoom(View):
+class ManageRoom(PermissionRequiredMixin, View):
+    permission_required = ["bookings.view_rooms", "bookings.change_services"]
     def get(self, request):
-        form = ManageRoomForm()
-        bigRoom = Rooms.objects.filter(room_type=Rooms.Type.Large)
-        medRoom = Rooms.objects.filter(room_type=Rooms.Type.Medium)
-        smlRoom = Rooms.objects.filter(room_type=Rooms.Type.Small)
-        service = Services.objects.all()
-        return render(request, 'Manager/ManageRoom.html', context={"bigroom": bigRoom, "medroom": medRoom, "smlRoom": smlRoom, "service": service, "manageroomform": form})
+        if request.user.groups.filter(name='Manager').exists():
+            form = ManageRoomForm()
+            serviceform = ServiceEditForm()
+            bigRoom = Rooms.objects.filter(room_type=Rooms.Type.Large)
+            medRoom = Rooms.objects.filter(room_type=Rooms.Type.Medium)
+            smlRoom = Rooms.objects.filter(room_type=Rooms.Type.Small)
+            service = Services.objects.all()
+            return render(request, 'Manager/ManageRoom.html', context={"bigroom": bigRoom, "medroom": medRoom, "smlRoom": smlRoom, "service": service, "manageroomform": form, "serviceedit": serviceform})
+        else:
+            return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
     
-class EditRoom(View):
+    def post(self, request):
+        if 'edit_service' in request.POST:
+            service_id = request.POST.get('service_id')
+            service = Services.objects.get(pk=service_id)
+            form = ServiceEditForm(request.POST, instance=service)
+            if form.is_valid():
+                form.save()
+                return redirect('manage-room')
+
+class EditRoom(PermissionRequiredMixin, View):
+    permission_required = ["bookings.change_rooms"]
     def get(self, request, room_id):
-        room = Rooms.objects.get(pk=room_id)
-        form = ManageRoomForm(instance=room)
-        return render(request, 'Manager/ManageRoomDetail.html', context={"room": room, "manageroomform": form})
+        if request.user.groups.filter(name='Manager').exists():
+            room = Rooms.objects.get(pk=room_id)
+            form = ManageRoomForm(instance=room)
+            return render(request, 'Manager/ManageRoomDetail.html', context={"room": room, "manageroomform": form})
+        else:
+            return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
     
     def post(self, request, room_id):
         room = Rooms.objects.get(pk=room_id)
         form = ManageRoomForm(request.POST, request.FILES, instance=room)
         print(form.is_valid())
-        if form.is_valid():
-            form.save()
-            return redirect('manage-room')
-        else:
-            print(form.errors)
-        return redirect('manage-room')
+        try:
+            with transaction.atomic():
+                if form.is_valid():
+                    form.save()
+                    return redirect('manage-room')
+                else:
+                    print(form.errors)
+                    return render(request, "Manager/ManageRoomDetail.html", context={"room": room, "manageroomform": form})
+            raise transaction.TransactionManagementError("Error")
+        except Exception as e:
+            raise e
     
-class CheckInNOut(View):
+class CheckInNOut(PermissionRequiredMixin, View):
+    permission_required = ["bookings.change_booking"]
     def get(self, request):
-        booking_checkin = Booking.objects.filter(booking_status=Booking.Booking_status.Check_In)
-        booking_checkout = Booking.objects.filter(booking_status=Booking.Booking_status.Check_Out)
-        return render(request, 'Manager/CheckInNOut.html', context={"booking_checkin": booking_checkin, "booking_checkout": booking_checkout})
+        if request.user.groups.filter(name='Manager').exists():
+            booking_checkin = Booking.objects.filter(booking_status=Booking.Booking_status.Check_In)
+            booking_checkout = Booking.objects.filter(booking_status=Booking.Booking_status.Check_Out)
+            return render(request, 'Manager/CheckInNOut.html', context={"booking_checkin": booking_checkin, "booking_checkout": booking_checkout})
+        else:
+            return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
+        
     
     def post(self, request):
         booking_id = request.POST.get("booking_id")
@@ -201,10 +236,24 @@ class CheckInNOut(View):
         except Booking.DoesNotExist:
             return redirect("checkinout")
 
-        if action == "checkout":
+        if action == "checkin":
             booking.booking_status = Booking.Booking_status.Check_Out
+            booking.room.status = Rooms.Status.InUse
+            booking.room.save()
+            booking.save()
+        elif action == "checkout":
+            booking.booking_status = Booking.Booking_status.Confirmed
             booking.room.status = Rooms.Status.Empty
             booking.room.save()
             booking.save()
 
         return redirect("checkinout")
+
+class HistoryView(PermissionRequiredMixin, View):
+    permission_required = ["bookings.view_booking"]
+    def get(self,request):
+        if request.user.groups.filter(name='Manager').exists():
+            booking_completed = Booking.objects.filter(booking_status=Booking.Booking_status.Confirmed)
+            return render(request, 'Manager/BookingHistory.html', context={"booking_completed": booking_completed})
+        else:
+            return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")

@@ -22,6 +22,10 @@ class RegisterModelForm(UserCreationForm):
             "password2"
         ]
     
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
+    
 class LoginForm(forms.ModelForm):
     class Meta:
         model =  User
@@ -31,6 +35,9 @@ class LoginForm(forms.ModelForm):
             "password" : forms.PasswordInput(attrs={"placeholder": "รหัสผ่าน", "class": "form-control"})
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
@@ -121,3 +128,33 @@ class ManageRoomForm(forms.ModelForm):
             "description" : forms.Textarea(attrs={"placeholder": "คำอธิบาย", "class": "form-control", 'rows': 3}),
             "room_image" : forms.FileInput(attrs={"class": "form-control"})
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        capacity = cleaned_data.get("capacity")
+        room = self.instance  
+
+        if room and capacity is not None:
+            room_type = room.room_type
+            
+            if room_type == Rooms.Type.Large and capacity > 20:
+                self.add_error("capacity", "ห้องขนาดใหญ่รองรับได้ไม่เกิน 20 คน")
+            elif room_type == Rooms.Type.Medium and capacity > 10:
+                self.add_error("capacity", "ห้องขนาดกลางรองรับได้ไม่เกิน 10 คน")
+            elif room_type == Rooms.Type.Small and capacity > 5:
+                self.add_error("capacity", "ห้องขนาดเล็กรองรับได้ไม่เกิน 5 คน")
+
+        return cleaned_data
+
+class ServiceEditForm(forms.ModelForm):
+    class Meta:
+        model = Services
+        fields = ["name", "price"]
+        widgets = {
+            "name" : forms.TextInput(attrs={"placeholder": "ชื่อบริการ", "class": "form-control"}),
+            "price" : forms.NumberInput(attrs={"placeholder": "ราคา", "class": "form-control"})
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
