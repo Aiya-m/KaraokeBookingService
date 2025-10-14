@@ -2,36 +2,43 @@
 {% load custom_filter %}
 {% block title %} Edit Room Detail {% endblock %}
 {% block content %}
-<div class="container p-3">
-    <div class="card shadow-lg p-4" style="max-width: 600px; margin: auto;">
-        <h3 class="text-center">{{ room.name }}</h3>
+<div class="container py-5">
+    <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+        <h3 class="text-center mb-4">{{ room.name }}</h3>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+
             <div class="mb-3">
-                <label for="{{ manageroomform.name.id_for_label }}">ชื่อห้อง</label>
+                <label for="{{ manageroomform.name.id_for_label }}" class="form-label">ชื่อห้อง</label>
                 {{ manageroomform.name }}
             </div>
+
             <div class="mb-3">
-                <label for="{{ manageroomform.status.id_for_label }}">สถานะของห้อง</label>
+                <label for="{{ manageroomform.status.id_for_label }}" class="form-label">สถานะของห้อง</label>
                 {{ manageroomform.status }}
             </div>
+
             <div class="mb-3">
                 {{ manageroomform.capacity.errors }}
-                <label for="{{ manageroomform.capacity.id_for_label }}">จำนวนลูกค้าสูงสุด</label>
+                <label for="{{ manageroomform.capacity.id_for_label }}" class="form-label">จำนวนลูกค้าสูงสุด</label>
                 {{ manageroomform.capacity }}
             </div>
+
             <div class="mb-3">
-                <label for="{{ manageroomform.price_per_hour.id_for_label }}">ราคา / ชั่วโมง</label>
+                <label for="{{ manageroomform.price_per_hour.id_for_label }}" class="form-label">ราคา / ชั่วโมง</label>
                 {{ manageroomform.price_per_hour }}
             </div>
+
             <div class="mb-3">
-                <label for="{{ manageroomform.description.id_for_label }}">คำอธิบายห้อง</label>
+                <label for="{{ manageroomform.description.id_for_label }}" class="form-label">คำอธิบายห้อง</label>
                 {{ manageroomform.description }}
             </div>
+
             <div class="mb-3">
-                <label for="{{ manageroomform.room_image.id_for_label }}">รูปห้อง</label>
+                <label for="{{ manageroomform.room_image.id_for_label }}" class="form-label">รูปห้อง</label>
                 {{ manageroomform.room_image }}
             </div>
+
             <div class="d-flex justify-content-end gap-2">
                 <a href="{% url 'manage-room' %}" class="btn btn-secondary">ย้อนกลับ</a>
                 <button type="submit" class="btn btn-primary">บันทึก</button>
