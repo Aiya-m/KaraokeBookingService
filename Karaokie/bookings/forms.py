@@ -38,6 +38,83 @@ class LoginForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = [
+            "number_of_customer",
+            "booking_date",
+            "start_time",
+            "end_time",
+            "phone",
+            "notes"
+        ]
+
+        widgets = {
+                "number_of_customer": forms.NumberInput(attrs={
+                    "class": "form-control",
+                    "min": 1,
+                    "placeholder": "10"
+                }),
+                "booking_date": forms.DateInput(attrs={
+                    "type": "date",
+                    "class": "form-control",
+                    "placeholder": "เลือกวันที่"
+                }),
+                "start_time": forms.TimeInput(attrs={
+                    "type": "time",
+                    "class": "form-control"
+                }),
+                "end_time": forms.TimeInput(attrs={
+                    "type": "time",
+                    "class": "form-control"
+                }),
+                "phone": forms.TextInput(attrs={
+                    "class": "form-control",
+                    "placeholder": "เช่น 0812345678"
+                }),
+            }
+        
+    notes = forms.CharField(required=False, widget=forms.Textarea(attrs={
+        "class": "form-control",
+        "rows": 2,
+        "placeholder": "หมายเหตุ (ถ้ามี)"
+    }))
+
+class RoomsForm(forms.Form):
+    room = forms.ModelChoiceField(
+        queryset=Rooms.objects.all(),
+        empty_label="เลือกห้อง",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
+class ServicesForm(forms.Form):
+    services = forms.ModelMultipleChoiceField(
+        queryset=Services.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            "class": "form-control",
+            "size": 5
+        })
+    )
+
+class PaymentsForm(forms.ModelForm):
+    class Meta:
+        model = Payments
+        fields = [
+            'payment_slip',
+            'pay_date',
+        ]
+        widgets = {
+            "pay_date": forms.DateTimeInput(attrs={
+                "type": "datetime-local",
+                "class": "form-control",
+                "placeholder": "เลือกวันที่และเวลา"
+            }),
+            "payment_slip": forms.ClearableFileInput(attrs={
+                "class": "form-control"
+            }),
+        }
 
 class ManageRoomForm(forms.ModelForm):
     class Meta:
