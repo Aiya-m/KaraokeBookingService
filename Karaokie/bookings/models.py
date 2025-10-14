@@ -71,11 +71,6 @@ class BookingServices(models.Model):
     quantity = models.IntegerField(default=0)
 
 class Payments(models.Model):
-    class Pay_status(models.TextChoices):
-        Pending = "รอดำเนินการ"
-        Paid = "ชำระเงินแล้ว"
-
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
     payment_slip = models.FileField(upload_to="Payment_Slip/", blank=True, null=True)
-    payment_status = models.CharField(max_length=20, choices=Pay_status.choices)
     pay_date = models.DateTimeField(null=False)
