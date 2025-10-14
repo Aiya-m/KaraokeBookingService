@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from bookings.models import *
 from django.views import View
-from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm
+from bookings.forms import RegisterModelForm, LoginForm, ManageRoomForm, BookingForm, ServicesForm, RoomsForm
 from bookings.models import Rooms
 from django.contrib.auth.models import Group
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.db import transaction
 
 # Create your views here.
 class RegisterView(View):
@@ -57,9 +58,9 @@ class LogoutView(View):
 
 class CustomerHome(View):
     def get(self, request):
-        bigRooms = Rooms.objects.filter(room_type__name='ห้องขนาดใหญ่')
-        mediumRooms = Rooms.objects.filter(room_type__name='ห้องขนาดกลาง')
-        smallRooms = Rooms.objects.filter(room_type__name='ห้องขนาดเล็ก')
+        bigRooms = Rooms.objects.filter(room_type='ห้องขนาดใหญ่')
+        mediumRooms = Rooms.objects.filter(room_type='ห้องขนาดกลาง')
+        smallRooms = Rooms.objects.filter(room_type='ห้องขนาดเล็ก')
         return render(request, 'Customer/index.html', {
             'bigRooms': bigRooms,
             'mediumRooms': mediumRooms,
@@ -68,10 +69,48 @@ class CustomerHome(View):
 
 class CustomerBooking(LoginRequiredMixin, View):
     def get(self, request):
-        if request.user.is_authenticated:
-            return render(request, 'Customer/bookingPage.html')
-        else:
-            return redirect('login')
+        bookingform = BookingForm()
+        roomsform = RoomsForm()
+        servicesform = ServicesForm()
+        return render(request, 'Customer/bookingPage.html', {
+            'bookingform': bookingform,
+            'roomsform': roomsform,
+            'servicesform': servicesform
+        })
+        
+    def post(self, request):
+        rooms_form = RoomsForm(request.POST)
+        services_form = ServicesForm(request.POST)
+        booking = BookingForm(request.POST)
+
+        selected_room = None
+        selected_service = None
+
+        try:
+            with transaction.atomic():
+                if booking.is_valid() and rooms_form.is_valid() and services_form.is_valid():
+                    selected_room = rooms_form.cleaned_data.get('room')
+                    selected_service = services_form.cleaned_data.get('services')
+
+                    booking = booking.save(commit=False)
+                    booking.user = request.user
+                    booking.booking_status = Booking.Booking_status.Pending
+                    if selected_room:
+                        booking.room = selected_room
+                    if selected_service:
+                        booking.service = selected_service
+                    booking.save()
+                    print('inserted in db')
+
+                    return redirect('customer-booking')
+
+                else:
+                    print("Error in else")
+                    raise transaction.TransactionManagementError("Error")
+            return redirect('customer-booking')
+        except Exception as e:
+            print("transaction exception", e)
+            return redirect('customer-home')
 
     
 class BookingList(View):
