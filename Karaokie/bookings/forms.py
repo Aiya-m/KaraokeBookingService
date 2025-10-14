@@ -82,12 +82,32 @@ class RoomsForm(forms.Form):
     )
 
 class ServicesForm(forms.Form):
-    services = forms.ModelChoiceField(
+    services = forms.ModelMultipleChoiceField(
         queryset=Services.objects.all(),
-        empty_label="เลือกบริการเพิ่มเติม",
-        widget=forms.Select(attrs={"class": "form-control"}),
-        required=False
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            "class": "form-control",
+            "size": 5
+        })
     )
+
+class PaymentsForm(forms.ModelForm):
+    class Meta:
+        model = Payments
+        fields = [
+            'payment_slip',
+            'pay_date',
+        ]
+        widgets = {
+            "pay_date": forms.DateTimeInput(attrs={
+                "type": "datetime-local",
+                "class": "form-control",
+                "placeholder": "เลือกวันที่และเวลา"
+            }),
+            "payment_slip": forms.ClearableFileInput(attrs={
+                "class": "form-control"
+            }),
+        }
 
 class ManageRoomForm(forms.ModelForm):
     class Meta:
