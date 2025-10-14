@@ -1,5 +1,5 @@
 from django import forms
-from bookings.models import Rooms, Booking, Services, BookingServices, Payments
+from bookings.models import Rooms, Booking, Services, Payments
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
