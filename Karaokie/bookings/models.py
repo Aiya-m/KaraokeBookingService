@@ -63,14 +63,7 @@ class Booking(models.Model):
         price = duration.total_seconds() * room.price_per_hour
         return price
 
-
-
-class BookingServices(models.Model):
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
-    service = models.ForeignKey(Services, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=0)
-
 class Payments(models.Model):
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
     payment_slip = models.FileField(upload_to="Payment_Slip/", blank=True, null=True)
     pay_date = models.DateTimeField(null=False)
