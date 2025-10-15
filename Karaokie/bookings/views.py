@@ -70,7 +70,7 @@ class CustomerHome(View):
             'smallRooms': smallRooms
             })
 
-class CustomerBooking(LoginRequiredMixin, View):
+class CustomerBooking(PermissionRequiredMixin, View):
     permission_required = ["bookings.add_booking", "bookings.delete_booking", "bookings.view_booking", "bookings.view_services", "bookings.view_rooms"]
     def get(self, request):
         bookingform = BookingForm()
@@ -160,7 +160,7 @@ class CustomerBooking(LoginRequiredMixin, View):
                 "paymentsform": payment,
             })
         
-class CustomerHistory(LoginRequiredMixin, View):
+class CustomerHistory(PermissionRequiredMixin, View):
     permission_required = ["bookings.delete_booking", "bookings.view_booking", "bookings.view_services", "bookings.view_rooms", "bookings.view_payments"]
     def get(self, request):
         bookings = Booking.objects.filter(user=request.user)
@@ -174,7 +174,7 @@ class CustomerHistory(LoginRequiredMixin, View):
 
         return redirect('customer-history')
 
-class CustomerProfile(LoginRequiredMixin, View):
+class CustomerProfile(PermissionRequiredMixin, View):
     permission_required = ["auth.change_user", "auth.view_user"]
     def get(self, request):
         user = request.user
