@@ -208,14 +208,8 @@ class BookingList(PermissionRequiredMixin, View):
     def post(self, request):
         booking_id = request.POST.get("booking_id")
         action = request.POST.get("action")
+        booking = Booking.objects.get(id=booking_id)
 
-        if not booking_id:
-            return redirect("bookinglist")
-
-        try:
-            booking = Booking.objects.get(id=booking_id)
-        except Booking.DoesNotExist:
-            return redirect("bookinglist")
         if action == "reject":
             booking.delete()
 
@@ -288,11 +282,7 @@ class CheckInNOut(PermissionRequiredMixin, View):
     def post(self, request):
         booking_id = request.POST.get("booking_id")
         action = request.POST.get("action")
-
-        try:
-            booking = Booking.objects.get(id=booking_id)
-        except Booking.DoesNotExist:
-            return redirect("checkinout")
+        booking = Booking.objects.get(id=booking_id)
 
         if action == "checkin":
             booking.booking_status = Booking.Booking_status.Check_Out
