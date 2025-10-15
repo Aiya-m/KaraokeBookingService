@@ -8,6 +8,7 @@
         {% if bookings %}
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for booking in bookings %}
+                    {% if user == booking.user %}
                     <div class="col">
                         <div class="card h-100 shadow-sm">
                             <div class="card-header bg-primary text-white">
@@ -63,6 +64,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         {% else %}

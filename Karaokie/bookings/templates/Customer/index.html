@@ -7,7 +7,7 @@
     <div class="container py-3 m-5">
         <h2 class="fw-bold pb-3">ประเภทห้องขนาดใหญ่</h2>
         <p>
-            {{ bigRooms.0.room_type.description }}
+            {{ bigRooms.0.description }}
         </p>
 
         <div class="d-flex overflow-auto">
@@ -18,12 +18,15 @@
                         <h5>{{room.description}}</h5>
                     </div>
                     <div class="card-body p-0">
-                        <img src="{% static 'img/oceanRoom.png' %}" alt="SamplePicture">
+                        {% if room.room_image %}
+                            <img src="{{ room.room_image.url }}" alt="{{ big.name }}" 
+                                 class="card-img-top" style="height: 50%; object-fit: cover;">
+                        {% endif %}
                         <p>
-                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.room_type.capacity}} คน
+                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.capacity}} คน
                         </p>
                         <p>
-                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
+                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.price_per_hour}} บาท
                         </p>
                         <div class="text-end">
                             <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
@@ -39,7 +42,7 @@
     <div class="container py-3 m-5">
         <h2 class="fw-bold pb-3">ประเภทห้องขนาดกลาง</h2>
         <p>
-            {{ mediumRooms.0.room_type.description }}
+            {{ mediumRooms.0.description }}
         </p>
 
         <div class="d-flex overflow-auto">
@@ -49,12 +52,15 @@
                         <h4 class="fw-bold">{{room.name}}</h4>
                     </div>
                     <div class="card-body p-0">
-                        <img src="{% static 'img/oceanRoom.png' %}" alt="SamplePicture">
+                        {% if room.room_image %}
+                            <img src="{{ room.room_image.url }}" alt="{{ room.name }}" 
+                                 class="card-img-top" style="height: 50%; object-fit: cover;">
+                        {% endif %}
                         <p>
-                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.room_type.capacity}} คน
+                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.capacity}} คน
                         </p>
                         <p>
-                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
+                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.price_per_hour}} บาท
                         </p>
                         <div class="text-end">
                             <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
@@ -70,7 +76,7 @@
     <div class="container py-3 m-5">
         <h2 class="fw-bold pb-3">ประเภทห้องขนาดเล็ก</h2>
         <p>
-            {{ smallRooms.0.room_type.description }}
+            {{ smallRooms.0.description }}
         </p>
 
         <div class="d-flex overflow-auto">
@@ -80,12 +86,15 @@
                         <h4 class="fw-bold">{{room.name}}</h4>
                     </div>
                     <div class="card-body p-0">
-                        <img src="{% static 'img/oceanRoom.png' %}" alt="SamplePicture">
+                        {% if room.room_image %}
+                            <img src="{{ room.room_image.url }}" alt="{{ room.name }}" 
+                                 class="card-img-top" style="height: 50%; object-fit: cover;">
+                        {% endif %}
                         <p>
-                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.room_type.capacity}} คน
+                            <span class="fw-bold">ความจุ: </span> สูงสุด {{room.capacity}} คน
                         </p>
                         <p>
-                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.room_type.price_per_hour}} บาท
+                            <span class="fw-bold">ราคาต่อชั่วโมง: </span> {{room.price_per_hour}} บาท
                         </p>
                         <div class="text-end">
                             <a href="{% url 'customer-booking' %}" class="btn btn-success">จองห้อง</a>
