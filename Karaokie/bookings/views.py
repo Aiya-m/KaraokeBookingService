@@ -71,6 +71,7 @@ class CustomerHome(View):
             })
 
 class CustomerBooking(LoginRequiredMixin, View):
+    permission_required = ["bookings.add_booking", "bookings.delete_booking", "bookings.view_booking", "bookings.view_services", "bookings.view_rooms"]
     def get(self, request):
         bookingform = BookingForm()
         roomsform = RoomsForm()
@@ -143,7 +144,7 @@ class CustomerBooking(LoginRequiredMixin, View):
                     payment_obj.save()
 
                     print("inserted in db")
-                    return redirect("customer-booking")
+                    return redirect("customer-history")
 
                 else:
                     print("Form invalid:", booking.errors, rooms_form.errors, payment.errors)
@@ -159,7 +160,8 @@ class CustomerBooking(LoginRequiredMixin, View):
                 "paymentsform": payment,
             })
         
-class CustomerHistory(View):
+class CustomerHistory(LoginRequiredMixin, View):
+    permission_required = ["bookings.delete_booking", "bookings.view_booking", "bookings.view_services", "bookings.view_rooms", "bookings.view_payments"]
     def get(self, request):
         bookings = Booking.objects.filter(user=request.user)
         return render(request, 'Customer/historyPage.html', {
@@ -172,7 +174,8 @@ class CustomerHistory(View):
 
         return redirect('customer-history')
 
-class CustomerProfile(View):
+class CustomerProfile(LoginRequiredMixin, View):
+    permission_required = ["auth.change_user", "auth.view_user"]
     def get(self, request):
         user = request.user
         edit_mode = request.GET.get('edit') == '1'
