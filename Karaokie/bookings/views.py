@@ -200,7 +200,7 @@ class BookingList(PermissionRequiredMixin, View):
     permission_required = ["bookings.delete_booking"]
     def get(self, request):
         if request.user.groups.filter(name='Manager').exists():
-            booking_pending = Booking.objects.filter(booking_status=Booking.Booking_status.Pending)
+            booking_pending = Booking.objects.filter(booking_status=Booking.Booking_status.Pending).order_by('create_date')
             return render(request, 'Manager/BookingList.html', context={"booking_pending": booking_pending})
         else:
             return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
@@ -272,8 +272,8 @@ class CheckInNOut(PermissionRequiredMixin, View):
     permission_required = ["bookings.change_booking"]
     def get(self, request):
         if request.user.groups.filter(name='Manager').exists():
-            booking_checkin = Booking.objects.filter(booking_status=Booking.Booking_status.Check_In)
-            booking_checkout = Booking.objects.filter(booking_status=Booking.Booking_status.Check_Out)
+            booking_checkin = Booking.objects.filter(booking_status=Booking.Booking_status.Check_In).order_by('create_date')
+            booking_checkout = Booking.objects.filter(booking_status=Booking.Booking_status.Check_Out).order_by('create_date')
             return render(request, 'Manager/CheckInNOut.html', context={"booking_checkin": booking_checkin, "booking_checkout": booking_checkout})
         else:
             return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
@@ -301,7 +301,7 @@ class HistoryView(PermissionRequiredMixin, View):
     permission_required = ["bookings.view_booking"]
     def get(self,request):
         if request.user.groups.filter(name='Manager').exists():
-            booking_completed = Booking.objects.filter(booking_status=Booking.Booking_status.Confirmed)
+            booking_completed = Booking.objects.filter(booking_status=Booking.Booking_status.Confirmed).order_by('create_date')
             return render(request, 'Manager/BookingHistory.html', context={"booking_completed": booking_completed})
         else:
             return HttpResponseForbidden("คุณไม่มีสิทธิ์เข้าถึงหน้านี้")
